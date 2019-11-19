@@ -14,11 +14,11 @@ private:
 public:
 	TTF_Font* font;
 	FPS* fpsControl;
-	int windowWidth;
-	int windowHeight;
-	int bitSize;
-	int gridSizeX;
-	int gridSizeY;
+	static int windowWidth;
+	static int windowHeight;
+	static int bitSize;
+	static int gridSizeX;
+	static int gridSizeY;
 public: 
 	Window();
 public:

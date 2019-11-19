@@ -10,6 +10,8 @@ private:
 	int numFrames;
 	int frames;
 public:
+	FPS();
+public:
 	void OnLoop();
 	int GetFPS();
 	int GetSpeedFactor();

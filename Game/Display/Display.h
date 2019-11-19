@@ -7,7 +7,16 @@
 #include "Window.h"
 
 class Display {
-
+protected:
+	static DISPLAY currDisplay;
+	static int* grid;
+public:
+	Display();
+public:
+	void OnInit();
+	void OnRender();
+	void LoadDisplay(DISPLAY display);
+	void OnCleanup();
 };
 
 #endif /* DISPLAY_H */
