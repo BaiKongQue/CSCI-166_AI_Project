@@ -2,19 +2,21 @@
 #ifndef FPS_H
 #define FPS_H
 
+#include <SDL.h>
+
 class FPS {
 private:
 	int oldTime;
 	int lastTime;
-	int speedFactor;
 	int numFrames;
 	int frames;
+	float speedFactor;
 public:
 	FPS();
 public:
 	void OnLoop();
 	int GetFPS();
-	int GetSpeedFactor();
+	float GetSpeedFactor();
 };
 
 #endif /* FPS_H */
