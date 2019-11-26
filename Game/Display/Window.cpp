@@ -8,9 +8,12 @@ Window::Window() :
 	bitSize(32),
 	gridSizeX(20),
 	gridSizeY(20),
-	windowWidth(this->gridSizeX * this->bitSize),
-	windowHeight(this->gridSizeY * this->bitSize)
+	windowWidth(0),
+	windowHeight(0)
 {
+	this->windowWidth = this->gridSizeX * this->bitSize;
+	this->windowHeight = this->gridSizeY * this->bitSize;
+
 	// initialize Window
 	this->window = SDL_CreateWindow(
 		"CSCI-166 AI Project: Robin  Hood",
@@ -88,17 +91,13 @@ void Window::ClearScreen() {
 	SDL_RenderClear(this->renderer);
 }
 
-void Window::RenderTexture(SDL_Texture* src, int x, int y) {
+void Window::Draw(SDL_Texture* src, SDL_Rect& srcRect, SDL_Rect& destRect) {
 	if (!src) {
 		printf("Failed rendering image, src is empty!");
 		return;
 	}
 
-	SDL_Rect Dest;
-	Dest.x = x;
-	Dest.y = y;
-
-	SDL_RenderCopy(this->renderer, src, nullptr, &Dest);
+	SDL_RenderCopy(this->renderer, src, &srcRect, &destRect);
 }
 
 Window::~Window() {

@@ -8,7 +8,7 @@
 #include <string>
 #include "FPS.h"
 
-static class Window {
+class Window {
 private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
@@ -26,7 +26,7 @@ public:
 	SDL_Texture* LoadImageTexture(const char* path);
 	SDL_Texture* LoadTextTexture(const char* text, SDL_Color textColor);
 	void ClearScreen();
-	void RenderTexture(SDL_Texture* src, int x, int y);
+	void Draw(SDL_Texture* src, SDL_Rect& srcRect, SDL_Rect& destRect);
 public:
 	~Window();
 };

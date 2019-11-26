@@ -9,7 +9,7 @@ FPS::FPS() :
 {}
 
 void FPS::OnLoop() {
-	if (this->oldTime + 1000 < SDL_GetTicks()) {
+	if ((this->oldTime + 1000.0f) < SDL_GetTicks()) {
 		this->oldTime = SDL_GetTicks();
 		this->numFrames = this->frames;
 		this->frames = 0;
