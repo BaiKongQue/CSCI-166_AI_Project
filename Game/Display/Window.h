@@ -4,28 +4,31 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
-#include "FPS.h"
+#include <SDL_image.h>
 #include <string>
+#include "FPS.h"
 
 static class Window {
 private:
-	static SDL_Window* window;
-	static SDL_Renderer* renderer;
+	SDL_Window* window;
+	SDL_Renderer* renderer;
 public:
 	TTF_Font* font;
 	FPS* fpsControl;
-	static int windowWidth;
-	static int windowHeight;
-	static int bitSize;
-	static int gridSizeX;
-	static int gridSizeY;
+	int windowWidth;
+	int windowHeight;
+	int bitSize;
+	int gridSizeX;
+	int gridSizeY;
 public: 
 	Window();
 public:
-	void OnInit();
-	void OnRender();
-	void OnCleanup();
-	static SDL_Texture* LoadTexture(const std::string& path);
+	SDL_Texture* LoadImageTexture(const char* path);
+	SDL_Texture* LoadTextTexture(const char* text, SDL_Color textColor);
+	void ClearScreen();
+	void RenderTexture(SDL_Texture* src, int x, int y);
+public:
+	~Window();
 };
 
 #endif /* WINDOW_H */
