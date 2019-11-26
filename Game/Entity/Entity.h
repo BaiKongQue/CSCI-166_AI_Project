@@ -2,30 +2,33 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "AI.h"
+#include <vector>
+
 #include "../Display/Window.h"
 #include "../Enum/GridType.enum.h"
 
-class Entity : AI {
+class Entity {
 protected:
-	bool dead;
 	GRID_TYPE type;
-	int pos;
+	int posX;
+	int posY;
 	int numFrames;
 	int currFrame;
 	SDL_Texture* spriteTexture;
+public:
+	static std::vector<Entity*> entities;
 public:
 	Entity();
 public:
 	void OnLoop();
 	void OnRender();
-	void OnMove(int newX, int newY);
 	void OnCleanup();
 protected:
-	void MakeMove();
+	void OnMove(int newX, int newY);
 	void OnAnimate();
 	void CanMove();
 	void LoadImage();
+	void OnCollision(Entity* entity);
 };
 
 #endif /* ENTITY_H */

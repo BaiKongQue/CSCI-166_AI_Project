@@ -5,15 +5,17 @@
 class AI {
 protected:
 	float transition;
+	float reward;
 	int** cache;
 public:
 	AI();
 private:
 	float Sample();
-	float GetReward();
 protected:
 	void Bellmans();
 	float Equation();
+public:
+	float GetReward();
 };
 
 #endif /* AI_H */

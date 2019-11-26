@@ -2,9 +2,9 @@
 #ifndef GUARD_H
 #define GUARD_H
 
-#include "Entity.h"
+#include "Person.h"
 
-class Guard : Entity {
+class Guard : Person {
 public:
 	Guard();
 };
