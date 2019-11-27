@@ -3,20 +3,26 @@
 #define ENTITY_H
 
 #include <vector>
-#include "../Display/Display.h"
+#include "../Display/Window.h"
+#include "../Enum/GridType.enum.h"
 
 class Entity {
 protected:
-	GRID_TYPE type;
+	int type;
 	int pos;
 	int numFrames;
 	int currFrame;
 	SDL_Texture* spriteTexture;
 protected:
-	Display* display;
 	Window* window;
+	std::vector<int>* walls;
 public:
-	Entity(Display* display, Window* window, const GRID_TYPE type, int spawnPos, const int numberFrames, const char* spriteLocation);
+	Entity(Window* window,
+		std::vector<int>* walls,
+		int spawnPos,
+		GRID_TYPE type,
+		int numberFrames,
+		const char* spritePath);
 public:
 	void OnLoop();
 	void OnRender();

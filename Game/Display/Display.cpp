@@ -1,8 +1,8 @@
 #include "Display.h"
 
-Display::Display(Window* window, std::vector<Entity*>* entities) :
+Display::Display(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls) :
     window(window),
-    walls(nullptr),
+    walls(walls),
     entities(entities),
     levelMsgTexture(nullptr),
     grassTexture(nullptr),

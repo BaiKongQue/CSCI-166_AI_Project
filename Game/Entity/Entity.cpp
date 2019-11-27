@@ -1,8 +1,14 @@
 #include "Entity.h"
 
-Entity::Entity(Display* display, Window* window, const GRID_TYPE type, int spawnPos, const int numberFrames, const char* spritePath) :
-	display(display),
+Entity::Entity(Window* window,
+	std::vector<int>* walls,
+	int spawnPos,
+	GRID_TYPE type,
+	int numberFrames,
+	const char* spritePath
+) :
 	window(window),
+	walls(walls),
 	type(type),
 	pos(spawnPos),
 	numFrames(numberFrames),

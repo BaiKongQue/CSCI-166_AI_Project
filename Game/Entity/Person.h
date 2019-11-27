@@ -7,7 +7,12 @@
 
 class Person : public Entity, protected AI {
 public:
-	Person(int spawnPos);
+	Person(Window* window,
+		std::vector<int>* walls,
+		int spawnPos,
+		GRID_TYPE type,
+		int numberFrames,
+		const char* spritePath);
 private:
 	void die();
 public:

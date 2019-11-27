@@ -6,7 +6,12 @@
 
 class Object : public Entity {
 public:
-    Object(int spawnPos);
+    Object(Window* window,
+		std::vector<int>* walls,
+		int spawnPos,
+		GRID_TYPE type,
+		int numberFrames,
+		const char* spritePath);
 	~Object();
 };
 

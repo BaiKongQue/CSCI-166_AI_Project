@@ -15,6 +15,7 @@ private:
 	Window* window;
 	Display* display;
 	std::vector<Entity*>* entities;
+	std::vector<int>* walls;
 public:
 	Game();
 private:

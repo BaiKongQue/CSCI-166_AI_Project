@@ -14,6 +14,7 @@
 #include "../Enum/GridType.enum.h"
 #include "Window.h"
 
+
 class Display {
 protected:
     Window* window;
@@ -24,7 +25,7 @@ protected:
     SDL_Texture* wallTexture;
     std::vector<int>* walls;
 public:
-    Display(Window*, std::vector<Entity*>*);
+    Display(Window*, std::vector<Entity*>*, std::vector<int>*);
     ~Display();
 public:
     virtual void OnRender();
