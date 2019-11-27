@@ -4,9 +4,9 @@
 
 #include "Object.h"
 
-class Arrow : Object {
+class Arrow : public Object {
 public:
-    Arrow();
+    Arrow(int spawnPos);
 	~Arrow();
 };
 

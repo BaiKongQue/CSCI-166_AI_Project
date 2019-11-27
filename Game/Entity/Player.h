@@ -4,12 +4,12 @@
 
 #include "Person.h";
 
-class Player : Person {
+class Player : public Person {
 private:
 	int arrows;
 	bool isArrowNocked;
 public:
-	Player();
+	Player(int spawnPos);
 private:
 	void PickUpArrow();
 public:

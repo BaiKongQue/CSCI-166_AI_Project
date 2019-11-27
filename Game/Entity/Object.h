@@ -4,9 +4,9 @@
 
 #include "Entity.h"
 
-class Object : Entity {
+class Object : public Entity {
 public:
-    Object();
+    Object(int spawnPos);
 	~Object();
 };
 

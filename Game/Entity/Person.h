@@ -5,9 +5,9 @@
 #include "Entity.h"
 #include "AI.h"
 
-class Person : Entity, AI {
+class Person : public Entity, protected AI {
 public:
-	Person();
+	Person(int spawnPos);
 private:
 	void die();
 public:

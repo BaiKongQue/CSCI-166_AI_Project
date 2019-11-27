@@ -4,9 +4,9 @@
 
 #include "Object.h"
 
-class Treasure : Object {
+class Treasure : public Object {
 public:
-    Treasure();
+    Treasure(int spawnPos);
 	~Treasure();
 };
 

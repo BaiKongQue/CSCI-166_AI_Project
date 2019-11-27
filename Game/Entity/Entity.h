@@ -15,17 +15,18 @@ protected:
 	int currFrame;
 	SDL_Texture* spriteTexture;
 public:
-	Entity();
+	Entity(int spawnPos);
 public:
 	void OnLoop();
 	void OnRender();
-	void OnCleanup();
 protected:
 	void OnMove(int newX, int newY);
 	void OnAnimate();
 	void CanMove();
 	void LoadImage();
 	void OnCollision(Entity* entity);
+public:
+	~Entity();
 };
 
 #endif /* ENTITY_H */

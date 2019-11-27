@@ -4,9 +4,9 @@
 
 #include "Person.h"
 
-class Guard : Person {
+class Guard : public Person {
 public:
-	Guard();
+	Guard(int spawnPos);
 	~Guard();
 };
 
