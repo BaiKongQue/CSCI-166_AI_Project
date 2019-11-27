@@ -17,3 +17,31 @@ Entity::Entity(Window* window,
 {
 	this->spriteTexture = this->window->LoadImageTexture(spritePath);
 }
+
+void Entity::OnLoop() {
+    
+}
+
+void Entity::OnRender() {
+
+}
+
+void Entity::OnMove(int newX, int newY) {
+
+}
+
+void Entity::OnAnimate() {
+
+}
+
+void Entity::CanMove() {
+
+}
+
+void Entity::LoadImage() {
+
+}
+
+void Entity::OnCollision() {
+
+}
