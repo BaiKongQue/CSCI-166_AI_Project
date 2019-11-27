@@ -39,6 +39,13 @@ void Game::Run() {
 	this->OnInit();
 
 	while (this->running) {
+		while (SDL_PollEvent(&this->events) != 0) {
+			//User requests quit
+			if (this->events.type == SDL_QUIT) {
+				this->running = false;
+			}
+		}
+
 		this->OnLoop();
 		this->OnRender();
 	}
