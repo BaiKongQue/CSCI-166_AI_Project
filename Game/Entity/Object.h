@@ -1,3 +1,4 @@
+#pragma once
 #ifndef Object_H
 #define Object_H
 
@@ -6,6 +7,7 @@
 class Object : Entity {
 public:
     Object();
+	~Object();
 };
 
 #endif /* Object_H */

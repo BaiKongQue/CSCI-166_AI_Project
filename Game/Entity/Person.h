@@ -1,3 +1,4 @@
+#pragma once
 #ifndef Person_H
 #define Person_H
 
@@ -6,9 +7,11 @@
 
 class Person : Entity, AI {
 public:
-    Person();
+	Person();
 private:
-    void die();
-}
+	void die();
+public:
+	~Person();
+};
 
 #endif /* Person_H */
