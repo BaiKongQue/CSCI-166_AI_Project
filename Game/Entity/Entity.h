@@ -8,6 +8,7 @@
 
 class Entity {
 protected:
+    bool dead;
 	GRID_TYPE type;
 	int pos;
 	int numFrames;
