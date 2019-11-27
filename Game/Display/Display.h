@@ -16,7 +16,7 @@
 
 
 class Display {
-protected:
+private:
     Window* window;
     std::vector<Entity*>* entities;
     std::string currLevel;
@@ -25,11 +25,15 @@ protected:
     SDL_Texture* wallTexture;
     std::vector<int>* walls;
 public:
-    Display(Window*, std::vector<Entity*>*, std::vector<int>*);
-    ~Display();
+    Display(Window*, std::vector<Entity*>*);
 public:
-    virtual void OnRender();
-    void LoadLevel(std::string level);
+	std::vector<int>* GetWalls();
+	void AddWall(int pos);
+	void ClearWalls();
+public:
+    void OnRender();
+public:
+    ~Display();
 };
 
 #endif /* DISPLAY_H */
