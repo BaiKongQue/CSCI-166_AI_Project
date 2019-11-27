@@ -15,6 +15,15 @@ std::vector<int>* Display::GetWalls() {
 	return this->walls;
 }
 
+void Display::AddWall(int pos) {
+    this->walls->push_back(pos);
+}
+
+void Display::ClearWalls() {
+    this->walls->clear();
+    this->walls->shrink_to_fit();
+}
+
 void Display::OnRender() {
     
 }
