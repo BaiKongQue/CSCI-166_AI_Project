@@ -7,10 +7,11 @@
 #include <vector>
 
 #include "../Entity/Entity.h"
-#include "../Entity/Person.h"
+#include "../Entity/Player.h"
+#include "../Entity/Guard.h"
 #include "../Entity/Arrow.h"
 #include "../Entity/Treasure.h"
-#include "../Enum/Display.enum.h"
+#include "../Enum/GridType.enum.h"
 #include "Window.h"
 
 class Display {

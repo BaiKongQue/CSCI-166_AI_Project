@@ -34,19 +34,19 @@ void Display::LoadLevel(std::string level) {
                         break;
                         
                     case GRID_TYPE::PLAYER:
-                        this->entities->push_back(new Player());
+                        this->entities->push_back(new Player(currIndex));
                         break;
                     
                     case GRID_TYPE::GUARD:
-                        this->entities->push_back(new Guard());
+                        this->entities->push_back(new Guard(currIndex));
                         break;
                     
                     case GRID_TYPE::ARROW:
-                        this->entities->push_back(new Arrow());
+                        this->entities->push_back(new Arrow(currIndex));
                         break;
                     
                     case GRID_TYPE::TREASURE:
-                        this->entities->push_back(new Treasure());
+                        this->entities->push_back(new Treasure(currIndex));
                         break;
                     
                     default:
