@@ -1,22 +1,33 @@
 #pragma once
 #ifndef DISPLAY_H
 #define DISPLAY_H
+#include <SDL.h>
+#include <fstream>
+#include <string>
+#include <vector>
 
+#include "../Entity/Entity.h"
+#include "../Entity/Person.h"
+#include "../Entity/Arrow.h"
+#include "../Entity/Treasure.h"
 #include "../Enum/Display.enum.h"
-#include "../Enum/GridType.enum.h"
 #include "Window.h"
 
 class Display {
 protected:
-	static DISPLAY currDisplay;
-	static int* grid;
+    Window* window;
+    std::vector<Entity*>* entities;
+    std::string currLevel;
+    SDL_Texture* levelMsgTexture;
+    SDL_Texture* grassTexture;
+    SDL_Texture* wallTexture;
+    std::vector<int>* walls;
 public:
-	Display();
+    Display(Window*, std::vector<Entity*>*);
+    ~Display();
 public:
-	void OnInit();
-	void OnRender();
-	void LoadDisplay(DISPLAY display);
-	void OnCleanup();
+    virtual void OnRender();
+    void LoadLevel(std::string level);
 };
 
 #endif /* DISPLAY_H */
