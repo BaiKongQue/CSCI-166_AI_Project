@@ -16,6 +16,8 @@ protected:
 	float Equation();
 public:
 	float GetReward();
+public:
+	~AI();
 };
 
 #endif /* AI_H */

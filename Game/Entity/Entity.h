@@ -10,13 +10,10 @@
 class Entity {
 protected:
 	GRID_TYPE type;
-	int posX;
-	int posY;
+	int pos;
 	int numFrames;
 	int currFrame;
 	SDL_Texture* spriteTexture;
-public:
-	static std::vector<Entity*> entities;
 public:
 	Entity();
 public:

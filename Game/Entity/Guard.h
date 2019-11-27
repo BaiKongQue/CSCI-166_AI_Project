@@ -7,6 +7,7 @@
 class Guard : Person {
 public:
 	Guard();
+	~Guard();
 };
 
 #endif /* GUARD_H */
