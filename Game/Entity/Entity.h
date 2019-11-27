@@ -8,6 +8,7 @@
 
 class Entity {
 protected:
+    bool dead;
 	GRID_TYPE type;
 	int pos;
 	int numFrames;
@@ -26,6 +27,7 @@ public:
 public:
 	void OnLoop();
 	void OnRender();
+    bool IsDead();
 protected:
 	void OnMove(int newX, int newY);
 	void OnAnimate();
