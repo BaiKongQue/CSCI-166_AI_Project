@@ -9,10 +9,10 @@
 
 #include "Display.h"
 #include "Window.h"
-#include "Entity.h"
-#include "Person.h"
-#include "Arrow.h"
-#include "Treasure.h"
+#include "../Entity/Entity.hpp"
+#include "../Entity/Person.hpp"
+#include "../Entity/Arrow.hpp"
+#include "../Entity/Treasure.hpp"
 
 class Map : Display {
 private:
