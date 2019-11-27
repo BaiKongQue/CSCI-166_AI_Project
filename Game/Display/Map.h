@@ -9,12 +9,12 @@
 
 #include "Display.h"
 #include "Window.h"
-#include "../Entity/Entity.hpp"
-#include "../Entity/Person.hpp"
-#include "../Entity/Arrow.hpp"
-#include "../Entity/Treasure.hpp"
+#include "../Entity/Entity.h"
+#include "../Entity/Person.h"
+#include "../Entity/Arrow.h"
+#include "../Entity/Treasure.h"
 
-class Map : Display {
+class Map : public Display {
 private:
     std::string currLevel;
     SDL_Texture* levelMsgTexture;

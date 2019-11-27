@@ -2,9 +2,10 @@
 #ifndef MENU_H
 #define MENU_H
 
+#include <SDL.h>
 #include "Display.h"
 
-class Menu : Display {
+class Menu : public Display {
 private:
 	SDL_Texture* displayTexture;
 public:
