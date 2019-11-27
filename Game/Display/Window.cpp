@@ -113,5 +113,8 @@ Window::~Window() {
 
 	// Destroy fps controller
 	delete this->fpsControl;
+
+	// Quit SDL Image
+	IMG_Quit();
 }
 
