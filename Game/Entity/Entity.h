@@ -3,9 +3,7 @@
 #define ENTITY_H
 
 #include <vector>
-
-#include "../Display/Window.h"
-#include "../Enum/GridType.enum.h"
+#include "../Display/Display.h"
 
 class Entity {
 protected:
@@ -14,8 +12,11 @@ protected:
 	int numFrames;
 	int currFrame;
 	SDL_Texture* spriteTexture;
+protected:
+	Display* display;
+	Window* window;
 public:
-	Entity(int spawnPos);
+	Entity(Display* display, Window* window, const GRID_TYPE type, int spawnPos, const int numberFrames, const char* spriteLocation);
 public:
 	void OnLoop();
 	void OnRender();
