@@ -36,7 +36,7 @@ Window::Window() :
 	}
 
 	// initialize Font
-	this->font = TTF_OpenFont("FreeSans.ttf", 28);
+	this->font = TTF_OpenFont("./Assets/fonts/FreeSans.ttf", 28);
 	if (this->font == nullptr) {
 		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
 		return;

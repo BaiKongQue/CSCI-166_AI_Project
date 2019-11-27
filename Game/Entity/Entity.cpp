@@ -42,6 +42,10 @@ void Entity::LoadImage() {
 
 }
 
-void Entity::OnCollision() {
+void Entity::OnCollision(Entity* entity) {
+
+}
+
+Entity::~Entity() {
 
 }

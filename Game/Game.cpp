@@ -58,6 +58,8 @@ void Game::OnInit() {
 	this->window = new Window();								// Create window
 	this->entities = new std::vector<Entity*>();				// Create entity array
 	this->display = new Display(this->window, this->entities);	// Create Displays
+
+	this->running = true;
 }
 
 void Game::OnLoop() {
@@ -77,14 +79,14 @@ void Game::OnRender() {
 
 void Game::Run() {
 	this->OnInit();
-
+	
 	while (this->running) {
-		while (SDL_PollEvent(&this->events) != 0) {
+		/*while (SDL_PollEvent(&this->events) != 0) {
 			//User requests quit
 			if (this->events.type == SDL_QUIT) {
 				this->running = false;
 			}
-		}
+		}*/
 
 		this->OnLoop();
 		this->OnRender();
