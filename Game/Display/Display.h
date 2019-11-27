@@ -8,15 +8,13 @@
 
 class Display {
 protected:
-	static DISPLAY currDisplay;
-	static int* grid;
+    static DISPLAY currDisplay;
+    Window* window;
 public:
-	Display();
+    Display(Window*);
+    ~Display();
 public:
-	void OnInit();
-	void OnRender();
-	void LoadDisplay(DISPLAY display);
-	void OnCleanup();
+    virtual void OnRender();
+    void LoadDisplay(DISPLAY display);
 };
-
 #endif /* DISPLAY_H */
