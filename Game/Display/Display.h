@@ -17,4 +17,5 @@ public:
     virtual void OnRender();
     void LoadDisplay(DISPLAY display);
 };
+
 #endif /* DISPLAY_H */
