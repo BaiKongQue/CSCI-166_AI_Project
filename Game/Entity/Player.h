@@ -9,7 +9,7 @@ private:
 	int arrows;
 	bool isArrowNocked;
 public:
-	Player(Window* window, std::vector<int>* walls, stdint spawnPos);
+	Player(Window* window, std::vector<int>* walls, int spawnPos);
 private:
 	void PickUpArrow();
 public:

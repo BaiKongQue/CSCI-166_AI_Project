@@ -8,6 +8,46 @@ Game::Game() :
 	entities(nullptr)
 {}
 
+void Game::LoadLevel(const char* level) {
+	std::string line = "";
+	std::ifstream file(level);
+	int currIndex = 0;
+
+	if (file.is_open()) {
+		while (std::getline(file, line)) {
+			for (int i = 0; i < line.size(); ++i, ++currIndex) {
+
+				switch (line[i]) {
+				case GRID_TYPE::WALL:
+					this->display->AddWall(currIndex);
+					break;
+
+				case GRID_TYPE::PLAYER:
+					this->entities->push_back(new Player(this->window, this->display->GetWalls(), currIndex));
+					break;
+
+				case GRID_TYPE::GUARD:
+					this->entities->push_back(new Guard(this->window, this->display->GetWalls(), currIndex));
+					break;
+
+				case GRID_TYPE::ARROW:
+					this->entities->push_back(new Arrow(this->window, this->display->GetWalls(), currIndex));
+					break;
+
+				case GRID_TYPE::TREASURE:
+					this->entities->push_back(new Treasure(this->window, this->display->GetWalls(), currIndex));
+					break;
+
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+}
+
+
 void Game::OnInit() {
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {

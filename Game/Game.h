@@ -15,9 +15,10 @@ private:
 	Window* window;
 	Display* display;
 	std::vector<Entity*>* entities;
-	std::vector<int>* walls;
 public:
 	Game();
+private:
+	void LoadLevel(const char* level);
 private:
 	void OnInit();
 	void OnLoop();

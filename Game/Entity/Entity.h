@@ -8,7 +8,7 @@
 
 class Entity {
 protected:
-	int type;
+	GRID_TYPE type;
 	int pos;
 	int numFrames;
 	int currFrame;
