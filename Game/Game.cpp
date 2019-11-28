@@ -69,7 +69,7 @@ void Game::OnLoop() {
 }
 
 void Game::OnRender() {
-	this->window->ClearScreen();								// Clear the screen
+	// this->window->ClearScreen();								// Clear the screen
 	this->display->OnRender();									// Render Display
 
 	for (Entity* entity : *this->entities) {
@@ -81,12 +81,12 @@ void Game::Run() {
 	this->OnInit();
 	
 	while (this->running) {
-		/*while (SDL_PollEvent(&this->events) != 0) {
+		while (SDL_PollEvent(&this->events) != 0) {
 			//User requests quit
 			if (this->events.type == SDL_QUIT) {
 				this->running = false;
 			}
-		}*/
+		}
 
 		this->OnLoop();
 		this->OnRender();
@@ -94,6 +94,9 @@ void Game::Run() {
 }
 
 Game::~Game() {
+	this->running = false;
+	this->gameWon = false;
+
 	// clear, reallocate, and delete entities
 	this->entities->clear();
 	this->entities->shrink_to_fit();
