@@ -14,6 +14,17 @@ Window::Window() :
 	this->windowWidth = this->gridSizeX * this->bitSize;
 	this->windowHeight = this->gridSizeY * this->bitSize;
 
+	// initialize Img
+	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+		return;
+	}
+
+	// initialize ttf
+	if (TTF_Init() == -1) {
+		printf("SDL_TTF could not initialize! SDL_TTF Error: %s\n", TTF_GetError());
+	}
+
 	// initialize Window
 	this->window = SDL_CreateWindow(
 		"CSCI-166 AI Project: Robin  Hood",
@@ -39,12 +50,6 @@ Window::Window() :
 	this->font = TTF_OpenFont("./Assets/fonts/FreeSans.ttf", 28);
 	if (this->font == nullptr) {
 		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-		return;
-	}
-	
-	// initialize Img
-	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
 		return;
 	}
 
@@ -108,8 +113,8 @@ Window::~Window() {
 	// destroy window    
 	SDL_DestroyRenderer(this->renderer);
 	SDL_DestroyWindow(this->window);
-	delete this->renderer;
-	delete this->window;
+	this->renderer = nullptr;
+	this->window = nullptr;
 
 	// Destroy fps controller
 	delete this->fpsControl;
