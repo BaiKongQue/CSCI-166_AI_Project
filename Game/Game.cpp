@@ -23,19 +23,19 @@ void Game::LoadLevel(const char* level) {
 					break;
 
 				case GRID_TYPE::PLAYER:
-					this->entities->push_back(new Player(this->window, this->display->GetWalls(), currIndex));
+					this->entities->push_back(new Player(this->window, this->entities, this->display->GetWalls(), currIndex));
 					break;
 
 				case GRID_TYPE::GUARD:
-					this->entities->push_back(new Guard(this->window, this->display->GetWalls(), currIndex));
+					this->entities->push_back(new Guard(this->window, this->entities, this->display->GetWalls(), currIndex));
 					break;
 
 				case GRID_TYPE::ARROW:
-					this->entities->push_back(new Arrow(this->window, this->display->GetWalls(), currIndex));
+					this->entities->push_back(new Arrow(this->window, this->entities, this->display->GetWalls(), currIndex));
 					break;
 
 				case GRID_TYPE::TREASURE:
-					this->entities->push_back(new Treasure(this->window, this->display->GetWalls(), currIndex));
+					this->entities->push_back(new Treasure(this->window, this->entities, this->display->GetWalls(), currIndex));
 					break;
 
 				default:
@@ -58,7 +58,7 @@ void Game::OnInit() {
 	this->window = new Window();								// Create window
 	this->entities = new std::vector<Entity*>();				// Create entity array
 	this->display = new Display(this->window, this->entities);	// Create Displays
-
+	this->entities->push_back(new Player(this->window, this->entities, this->display->GetWalls(), 0));
 	this->running = true;
 }
 
@@ -69,21 +69,24 @@ void Game::OnLoop() {
 }
 
 void Game::OnRender() {
-	// this->window->ClearScreen();								// Clear the screen
+	this->window->ClearScreen();								// Clear the screen
 	this->display->OnRender();									// Render Display
 
 	for (Entity* entity : *this->entities) {
 		entity->OnRender();										// Render each entity
 	}
+
+	this->window->UpdateScreen();								// update the screen with the render at the end
 }
 
 void Game::Run() {
 	this->OnInit();
-	
+
+	SDL_Event Event;
 	while (this->running) {
-		while (SDL_PollEvent(&this->events) != 0) {
+		while (SDL_PollEvent(&Event)) {
 			//User requests quit
-			if (this->events.type == SDL_QUIT) {
+			if (Event.type == SDL_QUIT) {
 				this->running = false;
 			}
 		}
