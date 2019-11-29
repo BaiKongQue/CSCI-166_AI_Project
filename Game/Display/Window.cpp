@@ -67,12 +67,13 @@ SDL_Texture* Window::LoadImageTexture(const char* path) {
 	SDL_Texture* newTexture = SDL_CreateTextureFromSurface(this->renderer, tempSurface);
 
 	SDL_FreeSurface(tempSurface);
-	delete tempSurface;
+	// delete tempSurface;
+	tempSurface = nullptr;
 
 	if (!newTexture)
 		return nullptr;
 
-	delete path;
+	// delete path;
 	return newTexture;
 }
 
@@ -105,10 +106,15 @@ void Window::Draw(SDL_Texture* src, SDL_Rect& srcRect, SDL_Rect& destRect) {
 	SDL_RenderCopy(this->renderer, src, &srcRect, &destRect);
 }
 
+void Window::UpdateScreen() {
+	SDL_RenderPresent(this->renderer);
+}
+
 Window::~Window() {
 	// free font
 	TTF_CloseFont(this->font);
-	delete this->font;
+	//delete this->font;
+	this->font = nullptr;
 
 	// destroy window    
 	SDL_DestroyRenderer(this->renderer);
