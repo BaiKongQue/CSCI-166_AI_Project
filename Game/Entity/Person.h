@@ -8,6 +8,7 @@
 class Person : public Entity, protected AI {
 public:
 	Person(Window* window,
+		std::vector<Entity*>* entities,
 		std::vector<int>* walls,
 		int spawnPos,
 		GRID_TYPE type,
