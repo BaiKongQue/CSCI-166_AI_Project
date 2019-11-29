@@ -99,8 +99,19 @@ void Game::Run() {
 Game::~Game() {
 	this->running = false;
 	this->gameWon = false;
+	
+	// delete all entity textures
+	for (SDL_Texture* texture : Entity::spriteCache) {
+		SDL_DestroyTexture(texture);
+		texture = nullptr;
+	}
+	Entity::spriteCache.clear();
+	Entity::spriteCache.shrink_to_fit();
 
 	// clear, reallocate, and delete entities
+	for (Entity* entity : *this->entities) {
+		delete entity;
+	}
 	this->entities->clear();
 	this->entities->shrink_to_fit();
 	delete this->entities;
