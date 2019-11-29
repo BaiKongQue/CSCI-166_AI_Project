@@ -38,7 +38,7 @@ Entity::Entity(Window* window,
 }
 
 void Entity::OnLoop() {
-	//this->OnAnimate();
+	this->OnAnimate();
 }
 
 void Entity::OnRender() {
@@ -54,7 +54,7 @@ void Entity::OnRender() {
 	destRect->x = this->posX * this->window->bitSize;
 	destRect->y = this->posY * this->window->bitSize;
 
-	this->window->Draw(this->spriteTexture, *srcRect, *destRect);
+	this->window->Draw(this->spriteTexture, destRect, srcRect);
 
 	delete srcRect;
 	delete destRect;

@@ -97,13 +97,13 @@ void Window::ClearScreen() {
 	SDL_RenderClear(this->renderer);
 }
 
-void Window::Draw(SDL_Texture* src, SDL_Rect& srcRect, SDL_Rect& destRect) {
+void Window::Draw(SDL_Texture* src, SDL_Rect* destRect, SDL_Rect* srcRect = nullptr) {
 	if (!src) {
 		printf("Failed rendering image, src is empty!");
 		return;
 	}
 
-	SDL_RenderCopy(this->renderer, src, &srcRect, &destRect);
+	SDL_RenderCopy(this->renderer, src, srcRect, destRect);
 }
 
 void Window::UpdateScreen() {
