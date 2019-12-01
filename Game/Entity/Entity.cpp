@@ -29,12 +29,65 @@ Entity::Entity(Window* window,
 		}
 	}
 
-	if (Entity::spriteCache[type - 1] == nullptr) {
+	if (Entity::spriteCache[(type - 1)] == nullptr) {
 		std::string path = "./Assets/images/";
 		path += spritePath;
-		Entity::spriteCache[type - 1] = this->window->LoadImageTexture(path.c_str());
+		Entity::spriteCache[(type - 1)] = this->window->LoadImageTexture(path.c_str());
 	}
-	this->spriteTexture = Entity::spriteCache[type - 1];
+	this->spriteTexture = Entity::spriteCache[(type - 1)];
+}
+
+void Entity::OnAnimate() {
+	if (this->oldTime + this->frameRate > SDL_GetTicks())
+		return;
+
+	this->oldTime = SDL_GetTicks();
+	this->currFrame += 1;
+
+	if (this->currFrame >= this->numFrames)
+		this->currFrame = 0;
+}
+
+bool Entity::IsWall(int x, int y) {
+	int newPos = this->GetPos(x, y);
+	for (int i : *this->walls) {
+		if (newPos > i)
+			break;
+		if (newPos == i)
+			return false;
+	}
+
+	return true;
+}
+
+std::vector<Entity::State*>* Entity::GetStates() {
+	std::vector<Entity::State*>* states = new std::vector<Entity::State*>();
+
+	// retrieve all states
+	for (int i : {-1, 0, 1}) {
+		for (int j : { -1, 0, 1 }) {
+			int x = i + this->posX;
+			int y = j + this->posY;
+			int pos = x + (y * (this->window->gridSizeX));
+			if (
+				((i == 0) != (j == 0))
+				&& (x >= 0 && x < this->window->gridSizeX)
+				&& (y >= 0 && y < this->window->gridSizeY)
+				&& (!this->IsWall(x, y))
+			) {
+				STATE direction = (i == 0 && j == -1) ? STATE::NORTH :
+					(i == 1 && j == 0) ? STATE::EAST :
+					(i == 0 && j == 1) ? STATE::SOUTH :
+					STATE::WEST;
+				states->push_back(new Entity::State{ direction, [this](){
+					this->posX = x;
+					this->posY = y;
+				}});
+			}
+		}
+	}
+
+	return states;
 }
 
 void Entity::OnLoop() {
@@ -60,51 +113,6 @@ void Entity::OnRender() {
 	delete destRect;
 }
 
-bool Entity::IsDead() {
-	return this->dead;
-}
-
-GRID_TYPE Entity::GetType() {
-	return this->type;
-}
-
-int Entity::GetPos() {
-	return this->posX + (this->posY * this->window->gridSizeX);
-}
-
-void Entity::OnMove(int newX, int newY) {
-
-}
-
-void Entity::OnAnimate() {
-	if (this->oldTime + this->frameRate > SDL_GetTicks())
-		return;
-
-	this->oldTime = SDL_GetTicks();
-	this->currFrame += 1;
-
-	if (this->currFrame >= this->numFrames)
-		this->currFrame = 0;
-}
-
-bool Entity::CanMove(int newPos) {
-	for (int i : *this->walls) {
-		if (newPos == i) 
-			return false;
-	}
-
-	for (Entity* entity : *this->entities) {
-		if (entity->GetType() == GRID_TYPE::GUARD && entity->GetPos() == newPos)
-			return false;
-	}
-
-	return true;
-}
-
-void Entity::OnCollision(Entity* entity) {
-
-}
-
 int Entity::GetX(int pos) {
 	return pos / this->window->gridSizeX;
 }
@@ -113,6 +121,15 @@ int Entity::GetY(int pos) {
 	return pos % this->window->gridSizeX;
 }
 
-Entity::~Entity() {
+int Entity::GetPos(int x, int y) {
+	return x + (y * this->window->gridSizeX);
+}
 
+Entity::~Entity() {
+	this->numFrames = 0;
+	this->currFrame = 0;
+	this->frameRate = 0;
+	this->oldTime = 0;
+	this->dead = false;
+	this->spriteTexture = nullptr;
 }
