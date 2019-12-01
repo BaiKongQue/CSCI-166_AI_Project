@@ -26,7 +26,8 @@ public:
 	SDL_Texture* LoadImageTexture(const char* path);
 	SDL_Texture* LoadTextTexture(const char* text, SDL_Color textColor);
 	void ClearScreen();
-	void Draw(SDL_Texture* src, SDL_Rect& srcRect, SDL_Rect& destRect);
+	void Draw(SDL_Texture* src, SDL_Rect* srcRect, SDL_Rect* destRect);
+	void UpdateScreen();
 public:
 	~Window();
 };

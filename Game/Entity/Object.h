@@ -7,6 +7,7 @@
 class Object : public Entity {
 public:
     Object(Window* window,
+		std::vector<Entity*>* entities,
 		std::vector<int>* walls,
 		int spawnPos,
 		GRID_TYPE type,

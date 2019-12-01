@@ -6,7 +6,7 @@
 
 class Guard : public Person {
 public:
-	Guard(Window* window, std::vector<int>* walls, int spawnPos);
+	Guard(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos);
 	~Guard();
 };
 
