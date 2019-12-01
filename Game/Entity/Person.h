@@ -3,6 +3,7 @@
 #define Person_H
 
 #include "Entity.h"
+#include <limits>
 
 class Person : public Entity {
 public:
@@ -18,12 +19,13 @@ private:
 protected:
 	virtual bool CanMove(int newX, int newY);
 	virtual void OnMove(int newX, int newY);
-	void MakeMove();
-private:
-	float Equation(int* vk_1, Entity::State* state);
-	int Bellmans();
-protected:
 	virtual std::vector<Entity::State*>* AddStates();
+private:
+	float Equation(float* vk_1, Entity::State* state, std::vector<Entity::State*>* states);
+	STATE Bellmans();
+	STATE MaxState(float* ar, int size);
+public:
+	void MakeMove();
 public:
 	~Person();
 };

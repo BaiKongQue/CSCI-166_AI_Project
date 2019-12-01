@@ -54,10 +54,10 @@ bool Entity::IsWall(int x, int y) {
 		if (newPos > i)
 			break;
 		if (newPos == i)
-			return false;
+			return true;
 	}
 
-	return true;
+	return false;
 }
 
 std::vector<Entity::State*>* Entity::GetStates() {
@@ -75,19 +75,33 @@ std::vector<Entity::State*>* Entity::GetStates() {
 				&& (y >= 0 && y < this->window->gridSizeY)
 				&& (!this->IsWall(x, y))
 			) {
-				STATE direction = (i == 0 && j == -1) ? STATE::NORTH :
+				STATE state = (i == 0 && j == -1) ? STATE::NORTH :
 					(i == 1 && j == 0) ? STATE::EAST :
 					(i == 0 && j == 1) ? STATE::SOUTH :
 					STATE::WEST;
-				states->push_back(new Entity::State{ direction, [this](){
-					this->posX = x;
-					this->posY = y;
-				}});
+				states->push_back(new Entity::State{
+					state,
+					[=]()->void {
+						this->posX = x;
+						this->posY = y;
+					},
+					[=]()->int {
+						for (Entity* entity : *this->entities) {
+							if (entity->posX == x && entity->posY == y)
+								return entity->GetReward();
+						}
+						return 1;
+					}
+				});
 			}
 		}
 	}
 
 	return states;
+}
+void Entity::MakeMove() {}
+float Entity::GetReward() {
+	return -10;
 }
 
 void Entity::OnLoop() {
@@ -114,11 +128,11 @@ void Entity::OnRender() {
 }
 
 int Entity::GetX(int pos) {
-	return pos / this->window->gridSizeX;
+	return pos % this->window->gridSizeX;
 }
 
 int Entity::GetY(int pos) {
-	return pos % this->window->gridSizeX;
+	return pos / this->window->gridSizeX;
 }
 
 int Entity::GetPos(int x, int y) {

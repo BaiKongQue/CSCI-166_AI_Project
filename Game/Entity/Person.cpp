@@ -27,32 +27,51 @@ bool Person::CanMove(int newX, int newY) {
 }
 
 void Person::MakeMove() {
-
+	this->Bellmans();
 }
 
-float Person::Equation(int* vk_1, Entity::State* state) {
+float Person::Equation(float* vk_1, Entity::State* state, std::vector<Entity::State*>* states) {
 	float gamma = 0.1f;
-	for (Entity* entity : *this->entities) {
-		if (this->GetPos(entity->posX, entity->posY) == state)
-			return transition * (entity->GetReward() + (gamma * vk_1[state]));
+	float t = 0.0f;
+	int r = 0;
+	float sum = 0.0f;
+	for (Entity::State* s : *states) {
+		t = (s == state) ? 1 - (0.1 * (states->size() - 1)) : 0.1 * (states->size() - 1);
+		r = s->reward();
+		sum += (t * (r + (gamma * vk_1[state->state])));
 	}
-	return (transition * (0.0f + (gamma * vk_1[state])));
+	return sum;
 }
 
-int Person::Bellmans() {
-	//int size = (this->window->gridSizeX) * (this->window->gridSizeY);
-	int* vk_1 = new int[8] { 0 };
-	int* vk = new int[8] { 0 };
+STATE Person::Bellmans() {
+	int size = 8;
+	float* vk_1 = new float[size];
+	float* vk = new float[size];
 	
+	// fill array with initial values
+	for (int i = 0; i < size; i++) {
+		vk_1[i] = 0;
+		vk[i] = INTMAX_MIN;
+	}
+
+	// get all states
 	std::vector<Entity::State*>* states = this->GetStates();
 	std::vector<Entity::State*>* addStates = this->AddStates();
 	
 	states->insert(states->end(), addStates->begin(), addStates->end());
 
-	for (Entity::State* state : states) {
-		this->Equation(vk_1, state);
+	// run value iteration
+	for (int i = 0; i < 4; i++) {
+		for (Entity::State* state : *states) {
+			vk[state->state] = this->Equation(vk_1, state, states);
+		}
+		for (int i = 0; i < size; i++)
+			vk_1[i] = vk[i];
 	}
 
+	STATE maxState = this->MaxState(vk, size);
+
+	// delete all pointers
 	for (Entity::State *state : *states) {
 		delete state;
 	}
@@ -64,6 +83,19 @@ int Person::Bellmans() {
 	delete addStates;
 	delete[] vk;
 	delete[] vk_1;
+	return maxState;
+}
+
+STATE Person::MaxState(float* ar, int size) {
+ 	int maxState = -1;
+	float maxVal = INTMAX_MIN;
+	for (int i = 0; i < size; i++) {
+		if (ar[i] > maxVal) {
+			maxState = i;
+			maxVal = ar[i];
+		}
+	}
+	return static_cast<STATE>(maxState);
 }
 
 std::vector<Entity::State*>* Person::AddStates() {

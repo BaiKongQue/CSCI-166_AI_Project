@@ -6,6 +6,7 @@
 #include "../Display/Window.h"
 #include "../Enum/GridType.enum.h"
 #include "../Enum/State.enum.h"
+#include <functional>
 
 class Entity {
 protected:
@@ -15,7 +16,8 @@ protected:
 	SDL_Texture* spriteTexture;
 	struct State {
 		STATE state;
-		void action;
+		std::function<void()> action;
+		std::function<int()> reward;
 	};
 private:
 	int numFrames;
@@ -40,15 +42,15 @@ public:
 private:
 	void OnAnimate();
 protected:
-	virtual void OnCollision(Entity* entity) = 0;
+	//virtual void OnCollision(Entity* entity);// = 0;
 	bool IsWall(int x, int y);
 	std::vector<State*>* GetStates();
 public:
-	virtual void MakeMove() = 0;
+	virtual void MakeMove();// = 0;
 	virtual void OnLoop();
 	void OnRender();
-	virtual float GetTransition() = 0;
-	virtual float GetReward() = 0;
+	//virtual float GetTransition();// = 0;
+	float GetReward();// = 0;
 	int GetPos(int x, int y);
 	int GetX(int pos);
 	int GetY(int pos);

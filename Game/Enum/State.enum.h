@@ -1,6 +1,6 @@
 #pragma once
 
-enum class STATE {
+enum STATE {
 	CATCH_PLAYER = 0,
 	NORTH,
 	EAST,
