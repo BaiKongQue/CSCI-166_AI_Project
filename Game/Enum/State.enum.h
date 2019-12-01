@@ -1,0 +1,12 @@
+#pragma once
+
+enum class STATE {
+	CATCH_PLAYER = 0,
+	NORTH,
+	EAST,
+	SOUTH,
+	WEST,
+	PICK_UP_ARROW,
+	FIRE_ARROW,
+	GET_TREASURE,
+};
