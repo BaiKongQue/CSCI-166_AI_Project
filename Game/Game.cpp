@@ -17,7 +17,7 @@ void Game::LoadLevel(const char* level) {
 		while (std::getline(file, line)) {
 			for (int i = 0; i < line.size(); ++i, ++currIndex) {
 
-				switch (line[i]) {
+				switch (line[i] - '0') {
 				case GRID_TYPE::WALL:
 					this->display->AddWall(currIndex);
 					break;

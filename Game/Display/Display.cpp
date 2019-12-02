@@ -8,6 +8,8 @@ Display::Display(Window* window) :
     wallTexture(nullptr)
 {
 	this->walls = new std::vector<int>();
+    this->wallTexture = window->LoadImageTexture("./Assets/images/wall_texture.png");
+    this->grassTexture = window->LoadImageTexture("./Assets/images/grass_texture.png");
 }
 
 std::vector<int>* Display::GetWalls() {
