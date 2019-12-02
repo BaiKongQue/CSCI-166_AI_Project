@@ -57,7 +57,7 @@ void Game::OnInit() {
 
 	this->window = new Window();								// Create window
 	this->entities = new std::vector<Entity*>();				// Create entity array
-	this->display = new Display(this->window, this->entities);	// Create Displays
+	this->display = new Display(this->window);	// Create Displays
 	Player* p = new Player(this->window, this->entities, this->display->GetWalls(), 0);
 	this->entities->push_back(p);
 	this->entities->push_back(new Guard(this->window, this->entities, this->display->GetWalls(), 1));
