@@ -1,7 +1,7 @@
 #include "Guard.h"
 
 Guard::Guard(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos):
-    Person(window, entities, walls, spawnPos, GRID_TYPE::GUARD, 0, "enemy_sprite.png")
+    Person(window, entities, walls, spawnPos, GRID_TYPE::GUARD, 8, "enemy_sprite.png")
 { }
 
 float Guard::GetReward(GRID_TYPE entityType) {

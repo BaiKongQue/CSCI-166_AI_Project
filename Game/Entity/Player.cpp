@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos):
-    Person(window, entities, walls, spawnPos, GRID_TYPE::PLAYER, 0, "archer_sprite.png"),
+    Person(window, entities, walls, spawnPos, GRID_TYPE::PLAYER, 4, "archer_sprite.png"),
 	arrows(0),
 	isArrowNocked(false)
 { }
@@ -15,28 +15,47 @@ float Player::GetReward(GRID_TYPE entityType) {
 
 std::vector<Entity::State*>* Player::AddStates() {
 	std::vector<Entity::State*>* states = new std::vector<Entity::State*>();
-	for (int i : {-1, 0, 1}) {
-		for (int j : { -1, 0, 1 }) {
-			int x = i + this->posX;
-			int y = j + this->posY;
+	if (this->arrows > 0) {
+		for (int i : {-1, 0, 1}) {
+			for (int j : { -1, 0, 1 }) {
+				int x = i + this->posX;
+				int y = j + this->posY;
 
-			if (
-				((i == 0) != (j == 0))
-				&& (x >= 0 && x < this->window->gridSizeX)
-				&& (y >= 0 && y < this->window->gridSizeY)
-				&& (!this->IsWall(x, y))
-			) {
+				if (
+					((i == 0) != (j == 0))
+					&& (x >= 0 && x < this->window->gridSizeX)
+					&& (y >= 0 && y < this->window->gridSizeY)
+					&& (!this->IsWall(x, y))
+				) {
+					Entity* target = nullptr;
 
-				states->push_back(new Entity::State{
-					STATE::FIRE_ARROW,
-					[=]()->void {
-						
-					},
-					[=]()->int {
-
+					while (target == nullptr
+						&& (x >= 0 && x < this->window->gridSizeX)
+						&& (y >= 0 && y < this->window->gridSizeY)
+						&& (!this->IsWall(x, y))
+					) {
+						for (Entity* entity : *this->entities) {
+							if (entity->posX == x && entity->posY == y) {
+								target = entity;
+								break;
+							}
+						}
+						x += i;
+						y += j;
 					}
-				});
+
+					states->push_back(new Entity::State{
+						STATE::FIRE_ARROW,
+						[=]()->void {
+							
+						},
+						[=]()->int {
+							return 1;
+						}
+					});
+				}
 			}
 		}
 	}
+	return states;
 }

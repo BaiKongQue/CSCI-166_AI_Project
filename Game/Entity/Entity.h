@@ -24,6 +24,8 @@ private:
 	int currFrame;
 	int frameRate;
 	int oldTime;
+	SDL_Rect* srcRect;
+	SDL_Rect* destRect;
 public:
     bool dead;
 	GRID_TYPE type;

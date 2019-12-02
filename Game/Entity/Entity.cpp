@@ -21,24 +21,30 @@ Entity::Entity(Window* window,
 	frameRate(100),
 	oldTime(0),
 	dead(false),
-	spriteTexture(nullptr)
+	spriteTexture(nullptr),
+	srcRect(new SDL_Rect{ 0, 0, this->window->bitSize, this->window->bitSize }),
+	destRect(new SDL_Rect{ 0, 0, this->window->bitSize, this->window->bitSize })
 {
+	// if sprite cache is empty initialize it
 	if (Entity::spriteCache.empty()) {
 		for (int i = 0; i < 4; i++) {
 			Entity::spriteCache.push_back(nullptr);
 		}
 	}
 
-	if (Entity::spriteCache[(type - 1)] == nullptr) {
+	// get sprite from sprite cache if not exist add it
+	if (Entity::spriteCache[(type - 2)] == nullptr) {
 		std::string path = "./Assets/images/";
 		path += spritePath;
-		Entity::spriteCache[(type - 1)] = this->window->LoadImageTexture(path.c_str());
+		Entity::spriteCache[(type - 2)] = this->window->LoadImageTexture(path.c_str());
 	}
-	this->spriteTexture = Entity::spriteCache[(type - 1)];
+	this->spriteTexture = Entity::spriteCache[(type - 2)];
+
+
 }
 
 void Entity::OnAnimate() {
-	if (this->oldTime + this->frameRate > SDL_GetTicks())
+	if (this->numFrames <= 0 || this->oldTime + this->frameRate > SDL_GetTicks())
 		return;
 
 	this->oldTime = SDL_GetTicks();
@@ -109,22 +115,12 @@ void Entity::OnLoop() {
 }
 
 void Entity::OnRender() {
-	SDL_Rect* srcRect = new SDL_Rect();
-	srcRect->w = this->window->bitSize;
-	srcRect->h = this->window->bitSize;
-	srcRect->x = this->currFrame * this->window->bitSize;
-	srcRect->y = 0;
+	this->srcRect->x = this->currFrame * this->window->bitSize;
 
-	SDL_Rect* destRect = new SDL_Rect();
-	destRect->w = this->window->bitSize;
-	destRect->h = this->window->bitSize;
-	destRect->x = this->posX * this->window->bitSize;
-	destRect->y = this->posY * this->window->bitSize;
+	this->destRect->x = this->posX * this->window->bitSize;
+	this->destRect->y = this->posY * this->window->bitSize;
 
-	this->window->Draw(this->spriteTexture, destRect, srcRect);
-
-	delete srcRect;
-	delete destRect;
+	this->window->Draw(this->spriteTexture, this->destRect, this->srcRect);
 }
 
 int Entity::GetX(int pos) {
@@ -146,4 +142,6 @@ Entity::~Entity() {
 	this->oldTime = 0;
 	this->dead = false;
 	this->spriteTexture = nullptr;
+	delete this->srcRect;
+	delete this->destRect;
 }
