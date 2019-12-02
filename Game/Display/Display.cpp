@@ -26,13 +26,14 @@ void Display::ClearWalls() {
 
 void Display::OnRender() {
     int size = this->window->gridSizeY * this->window->gridSizeX;
-    SDL_Rect* currRect = nullptr;
+    SDL_Rect* currRect = new SDL_Rect{0, 0, this->window->bitSize, this->window->bitSize};
     int currWall = 0;
     
     for (int i = 0; i < size; ++i) {
         int x = i % this->window->gridSizeX;
         int y = i / this->window->gridSizeY;
-        currRect = new SDL_Rect{x, y, this->window->bitSize, this->window->bitSize;
+        currRect->x = x;
+        currRect->y = y;
         if (i == this->walls->at(currWall)) {
             this->window->Draw(this->wallTexture, currRect, nullptr);
             ++currWall;
@@ -40,12 +41,14 @@ void Display::OnRender() {
         else {
             this->window->Draw(this->grassTexture, currRect, nullptr);
         }
-        delete currRect;
+        
     }
     
     for (int i = 0; i < this->entities->size(); ++i) {
         this->entities->at(i)->OnRender();
     }
+
+    delete currRect;
 }
 
 Display::~Display() {
