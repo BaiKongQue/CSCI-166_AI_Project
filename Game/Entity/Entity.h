@@ -5,35 +5,55 @@
 #include <vector>
 #include "../Display/Window.h"
 #include "../Enum/GridType.enum.h"
+#include "../Enum/State.enum.h"
+#include <functional>
 
 class Entity {
 protected:
-    bool dead;
-	GRID_TYPE type;
-	int pos;
-	int numFrames;
-	int currFrame;
-	SDL_Texture* spriteTexture;
-protected:
 	Window* window;
 	std::vector<int>* walls;
+	std::vector<Entity*>* entities;
+	SDL_Texture* spriteTexture;
+	struct State {
+		STATE state;
+		std::function<void()> action;
+		std::function<int()> reward;
+	};
+private:
+	int numFrames;
+	int currFrame;
+	int frameRate;
+	int oldTime;
+public:
+    bool dead;
+	GRID_TYPE type;
+public:
+	static std::vector<SDL_Texture*> spriteCache;
+	int posX;
+	int posY;
 public:
 	Entity(Window* window,
+		std::vector<Entity*>* entities,
 		std::vector<int>* walls,
 		int spawnPos,
 		GRID_TYPE type,
 		int numberFrames,
 		const char* spritePath);
-public:
-	void OnLoop();
-	void OnRender();
-    bool IsDead();
-protected:
-	void OnMove(int newX, int newY);
+private:
 	void OnAnimate();
-	void CanMove();
-	void LoadImage();
-	void OnCollision(Entity* entity);
+protected:
+	//virtual void OnCollision(Entity* entity);// = 0;
+	bool IsWall(int x, int y);
+	std::vector<State*>* GetStates();
+public:
+	virtual void MakeMove();// = 0;
+	virtual void OnLoop();
+	void OnRender();
+	//virtual float GetTransition();// = 0;
+	float GetReward();// = 0;
+	int GetPos(int x, int y);
+	int GetX(int pos);
+	int GetY(int pos);
 public:
 	~Entity();
 };

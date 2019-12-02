@@ -6,7 +6,7 @@
 
 class Arrow : public Object {
 public:
-    Arrow(Window* window, std::vector<int>* walls, int spawnPos);
+    Arrow(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos);
 	~Arrow();
 };
 

@@ -6,7 +6,7 @@
 
 class Treasure : public Object {
 public:
-    Treasure(Window* window, std::vector<int>* walls, int spawnPos);
+    Treasure(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos);
 	~Treasure();
 };
 
