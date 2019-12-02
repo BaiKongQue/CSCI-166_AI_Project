@@ -34,14 +34,13 @@ void Display::OnRender() {
         int y = i / this->window->gridSizeY;
         currRect = new SDL_Rect{x, y, this->window->bitSize, this->window->bitSize;
         if (i == this->walls->at(currWall)) {
-            this->window->Draw(this->wallTexture, currRect, currRect);
+            this->window->Draw(this->wallTexture, currRect, nullptr);
             ++currWall;
         }
         else {
-            this->window->Draw(this->grassTexture, currRect, currRect);
+            this->window->Draw(this->grassTexture, currRect, nullptr);
         }
         delete currRect;
-        currRect = nullptr; 
     }
     
     for (int i = 0; i < this->entities->size(); ++i) {
