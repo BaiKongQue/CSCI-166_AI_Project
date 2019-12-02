@@ -1,9 +1,8 @@
 #include "Display.h"
 
-Display::Display(Window* window, std::vector<Entity*>* entities) :
+Display::Display(Window* window) :
     window(window),
     walls(nullptr),
-    entities(entities),
     levelMsgTexture(nullptr),
     grassTexture(nullptr),
     wallTexture(nullptr)
@@ -42,10 +41,6 @@ void Display::OnRender() {
             this->window->Draw(this->grassTexture, currRect, nullptr);
         }
         
-    }
-    
-    for (int i = 0; i < this->entities->size(); ++i) {
-        this->entities->at(i)->OnRender();
     }
 
     delete currRect;
