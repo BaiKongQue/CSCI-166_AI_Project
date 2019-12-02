@@ -22,8 +22,8 @@ protected:
 	virtual std::vector<Entity::State*>* AddStates();
 private:
 	float Equation(float* vk_1, Entity::State* state, std::vector<Entity::State*>* states);
-	STATE Bellmans();
-	STATE MaxState(float* ar, int size);
+	void Bellmans();
+	Entity::State* MaxState(float* ar, std::vector<Entity::State*>* states);
 public:
 	void MakeMove();
 public:

@@ -24,6 +24,10 @@ void Person::OnMove(int newX, int newY) {
 
 bool Person::CanMove(int newX, int newY) {
 	return !this->IsWall(newX, newY);
+	for (Entity* entity : *this->entities) {
+		if (this->posX == entity->posX && this->posY == entity->posY)
+			entity->OnCollision(this->type);
+	}
 }
 
 void Person::MakeMove() {
@@ -43,8 +47,8 @@ float Person::Equation(float* vk_1, Entity::State* state, std::vector<Entity::St
 	return sum;
 }
 
-STATE Person::Bellmans() {
-	int size = 8;
+void Person::Bellmans() {
+	int size = 5;
 	float* vk_1 = new float[size];
 	float* vk = new float[size];
 	
@@ -69,12 +73,11 @@ STATE Person::Bellmans() {
 			vk_1[i] = vk[i];
 	}
 
-	STATE maxState = this->MaxState(vk, size);
+	Entity::State* maxState = this->MaxState(vk, states);
+	maxState->action();
 
 	// delete all pointers
-	for (Entity::State *state : *states) {
-		delete state;
-	}
+	for (Entity::State *state : *states) { delete state; }
 	states->clear();
 	states->shrink_to_fit();
 	delete states;
@@ -83,19 +86,18 @@ STATE Person::Bellmans() {
 	delete addStates;
 	delete[] vk;
 	delete[] vk_1;
-	return maxState;
 }
 
-STATE Person::MaxState(float* ar, int size) {
- 	int maxState = -1;
+Entity::State* Person::MaxState(float* ar, std::vector<Entity::State*>* states) {
+ 	Entity::State* maxState = nullptr;
 	float maxVal = INTMAX_MIN;
-	for (int i = 0; i < size; i++) {
-		if (ar[i] > maxVal) {
-			maxState = i;
-			maxVal = ar[i];
+	for (Entity::State* state : *states) {
+		if (maxState == nullptr || ar[state->state] > maxVal) {
+			maxState = state;
+			maxVal = ar[state->state];
 		}
 	}
-	return static_cast<STATE>(maxState);
+	return maxState;
 }
 
 std::vector<Entity::State*>* Person::AddStates() {
