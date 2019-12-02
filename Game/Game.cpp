@@ -63,8 +63,8 @@ void Game::OnInit() {
 
 void Game::OnLoop() {
 	for (Entity* entity : *this->entities) {
-		//if (entity->type == GRID_TYPE::PLAYER)
-		//	entity->MakeMove();
+		if (entity->type == GRID_TYPE::PLAYER)
+			entity->MakeMove();
 		entity->OnLoop();										// Run each entity loop
 	}
 }
