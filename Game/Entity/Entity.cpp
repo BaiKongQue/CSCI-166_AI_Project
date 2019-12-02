@@ -68,7 +68,7 @@ std::vector<Entity::State*>* Entity::GetStates() {
 		for (int j : { -1, 0, 1 }) {
 			int x = i + this->posX;
 			int y = j + this->posY;
-			int pos = x + (y * (this->window->gridSizeX));
+
 			if (
 				((i == 0) != (j == 0))
 				&& (x >= 0 && x < this->window->gridSizeX)
@@ -88,7 +88,7 @@ std::vector<Entity::State*>* Entity::GetStates() {
 					[=]()->int {
 						for (Entity* entity : *this->entities) {
 							if (entity->posX == x && entity->posY == y)
-								return entity->GetReward();
+								return entity->GetReward(this->type);
 						}
 						return 1;
 					}
@@ -99,10 +99,10 @@ std::vector<Entity::State*>* Entity::GetStates() {
 
 	return states;
 }
+
 void Entity::MakeMove() {}
-float Entity::GetReward() {
-	return -10;
-}
+void Entity::OnCollision(GRID_TYPE entityType) {}
+float Entity::GetReward(GRID_TYPE entityType) { return 0; }
 
 void Entity::OnLoop() {
 	this->OnAnimate();

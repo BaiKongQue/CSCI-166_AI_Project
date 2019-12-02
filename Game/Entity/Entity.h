@@ -42,15 +42,14 @@ public:
 private:
 	void OnAnimate();
 protected:
-	//virtual void OnCollision(Entity* entity);// = 0;
 	bool IsWall(int x, int y);
 	std::vector<State*>* GetStates();
 public:
-	virtual void MakeMove();// = 0;
+	virtual void OnCollision(GRID_TYPE entityType);
+	virtual float GetReward(GRID_TYPE entityType);
+	virtual void MakeMove();
 	virtual void OnLoop();
 	void OnRender();
-	//virtual float GetTransition();// = 0;
-	float GetReward();// = 0;
 	int GetPos(int x, int y);
 	int GetX(int pos);
 	int GetY(int pos);

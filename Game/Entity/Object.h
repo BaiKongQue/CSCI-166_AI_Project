@@ -14,6 +14,8 @@ public:
 		int numberFrames,
 		const char* spritePath);
 	~Object();
+public:
+	void MakeMove();
 };
 
 #endif /* Object_H */
