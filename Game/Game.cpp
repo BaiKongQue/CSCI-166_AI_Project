@@ -17,7 +17,7 @@ void Game::LoadLevel(const char* level) {
 		while (std::getline(file, line)) {
 			for (int i = 0; i < line.size(); ++i, ++currIndex) {
 
-				switch (line[i]) {
+				switch (line[i] - '0') {
 				case GRID_TYPE::WALL:
 					this->display->AddWall(currIndex);
 					break;
@@ -54,11 +54,10 @@ void Game::OnInit() {
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 		return;
 	}
-
+    this->LoadLevel("./Assets/maps/level_1.txt");
 	this->window = new Window();								// Create window
 	this->entities = new std::vector<Entity*>();				// Create entity array
-	this->display = new Display(this->window, this->entities);	// Create Displays
-
+	this->display = new Display(this->window);	// Create Displays
 	this->running = true;
 }
 

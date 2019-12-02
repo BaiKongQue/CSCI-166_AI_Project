@@ -18,14 +18,13 @@
 class Display {
 private:
     Window* window;
-    std::vector<Entity*>* entities;
     std::string currLevel;
     SDL_Texture* levelMsgTexture;
     SDL_Texture* grassTexture;
     SDL_Texture* wallTexture;
     std::vector<int>* walls;
 public:
-    Display(Window*, std::vector<Entity*>*);
+    Display(Window*);
 public:
 	std::vector<int>* GetWalls();
 	void AddWall(int pos);
