@@ -54,7 +54,7 @@ void Game::OnInit() {
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 		return;
 	}
-
+    this->LoadLevel("./Assets/maps/level_1.txt");
 	this->window = new Window();								// Create window
 	this->entities = new std::vector<Entity*>();				// Create entity array
 	this->display = new Display(this->window);	// Create Displays
