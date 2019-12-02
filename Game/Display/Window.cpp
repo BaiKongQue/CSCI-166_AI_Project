@@ -4,7 +4,6 @@ Window::Window() :
 	window(nullptr),
 	renderer(nullptr),
 	font(nullptr),
-	fpsControl(nullptr),
 	bitSize(32),
 	gridSizeX(20),
 	gridSizeY(20),
@@ -53,7 +52,6 @@ Window::Window() :
 		return;
 	}
 
-	this->fpsControl = new FPS();
 }
 
 SDL_Texture* Window::LoadImageTexture(const char* path) {
@@ -121,9 +119,6 @@ Window::~Window() {
 	SDL_DestroyWindow(this->window);
 	this->renderer = nullptr;
 	this->window = nullptr;
-
-	// Destroy fps controller
-	delete this->fpsControl;
 
 	// Quit SDL Image
 	IMG_Quit();

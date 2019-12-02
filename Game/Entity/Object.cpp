@@ -10,3 +10,5 @@ Object::Object(Window* window,
 ) :
 	Entity(window, entities, walls, spawnPos, type, numberFrames, spritePath)
 {}
+
+void Object::MakeMove() {}
