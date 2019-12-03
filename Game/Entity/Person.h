@@ -3,9 +3,18 @@
 #define Person_H
 
 #include "Entity.h"
-#include <limits>
+#include <iterator>
+#include <random>
 
 class Person : public Entity {
+private:
+	int vSize;
+	float* vk_1;
+	float* vk;
+	float gamma;
+	std::random_device seeder;
+	std::mt19937 engine;
+	float* vtest;
 public:
 	Person(Window* window,
 		std::vector<Entity*>* entities,
@@ -14,14 +23,10 @@ public:
 		GRID_TYPE type,
 		int numberFrames,
 		const char* spritePath);
-private:
-	void die();
 protected:
-	virtual bool CanMove(int newX, int newY);
-	virtual void OnMove(int newX, int newY);
 	virtual std::vector<Entity::State*>* AddStates();
 private:
-	float Equation(float* vk_1, Entity::State* state, std::vector<Entity::State*>* states);
+	float Equation(Entity::State* state, std::vector<Entity::State*>* states);
 	void Bellmans();
 	Entity::State* MaxState(float* ar, std::vector<Entity::State*>* states);
 public:

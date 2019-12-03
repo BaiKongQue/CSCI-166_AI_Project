@@ -14,6 +14,7 @@ private:
 	void PickUpArrow();
 protected:
 	virtual std::vector<Entity::State*>* AddStates();
+	void OnCollision(Entity* arrow);
 public:
 	void NockArrow();
 	void FireArrow();

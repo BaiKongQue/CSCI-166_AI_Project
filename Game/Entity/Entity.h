@@ -16,6 +16,7 @@ protected:
 	SDL_Texture* spriteTexture;
 	struct State {
 		STATE state;
+		int pos;
 		std::function<void()> action;
 		std::function<int()> reward;
 	};
@@ -46,8 +47,8 @@ private:
 protected:
 	bool IsWall(int x, int y);
 	std::vector<State*>* GetStates();
+	virtual void OnCollision(Entity* entity);
 public:
-	virtual void OnCollision(GRID_TYPE entityType);
 	virtual float GetReward(GRID_TYPE entityType);
 	virtual void MakeMove();
 	virtual void OnLoop();

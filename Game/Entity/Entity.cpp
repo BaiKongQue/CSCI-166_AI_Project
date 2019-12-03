@@ -57,8 +57,6 @@ void Entity::OnAnimate() {
 bool Entity::IsWall(int x, int y) {
 	int newPos = this->GetPos(x, y);
 	for (int i : *this->walls) {
-		if (newPos > i)
-			break;
 		if (newPos == i)
 			return true;
 	}
@@ -87,9 +85,12 @@ std::vector<Entity::State*>* Entity::GetStates() {
 					STATE::WEST;
 				states->push_back(new Entity::State{
 					state,
+					this->GetPos(x, y),
 					[=]()->void {
-						this->posX = x;
-						this->posY = y;
+						if (!this->IsWall(x, y)) {
+							this->posX = x;
+							this->posY = y;
+						}
 					},
 					[=]()->int {
 						for (Entity* entity : *this->entities) {
@@ -107,11 +108,18 @@ std::vector<Entity::State*>* Entity::GetStates() {
 }
 
 void Entity::MakeMove() {}
-void Entity::OnCollision(GRID_TYPE entityType) {}
+void Entity::OnCollision(Entity* entity) {}
 float Entity::GetReward(GRID_TYPE entityType) { return 0; }
 
 void Entity::OnLoop() {
 	this->OnAnimate();
+	if (this->dead)
+		printf("test");
+	for (Entity* entity : *this->entities) {
+		if (entity != this && entity->posX == this->posX && entity->posY == this->posY) {
+			this->OnCollision(entity);
+		}
+	}
 }
 
 void Entity::OnRender() {

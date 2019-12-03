@@ -35,7 +35,7 @@ std::vector<Entity::State*>* Player::AddStates() {
 						&& (!this->IsWall(x, y))
 					) {
 						for (Entity* entity : *this->entities) {
-							if (entity->posX == x && entity->posY == y) {
+							if (entity->type == GRID_TYPE::GUARD && entity->posX == x && entity->posY == y) {
 								target = entity;
 								break;
 							}
@@ -44,18 +44,45 @@ std::vector<Entity::State*>* Player::AddStates() {
 						y += j;
 					}
 
-					states->push_back(new Entity::State{
-						STATE::FIRE_ARROW,
-						[=]()->void {
-							
-						},
-						[=]()->int {
-							return 1;
-						}
-					});
+					if (target != nullptr) {
+						states->push_back(new Entity::State{
+							STATE::FIRE_ARROW,
+							(target->GetPos(target->posX, target->posY)),
+							[=]()->void {
+								for (int i = 0; i < this->entities->size(); i++) {
+									if (this->entities->at(i) == target) {
+										this->entities->erase(this->entities->begin() + i);
+										delete target;
+										return;
+									}
+								}
+							},
+							[=]()->int {
+								return 1;
+							}
+						});
+					}
 				}
 			}
 		}
 	}
 	return states;
+}
+
+void Player::OnCollision(Entity* entity) {
+	switch (entity->type) {
+	case GRID_TYPE::ARROW:
+		this->arrows++;
+		for (int i = 0; i < this->entities->size(); i++) {
+			if (this->entities->at(i) == entity) {
+				this->entities->erase(this->entities->begin() + i);
+				delete entity;
+				return;
+			}
+		}
+		break;
+	case GRID_TYPE::GUARD:
+		this->dead = true;
+		break;
+	}
 }
