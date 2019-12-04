@@ -7,6 +7,12 @@ Treasure::Treasure(Window* window, std::vector<Entity*>* entities, std::vector<i
 float Treasure::GetReward(GRID_TYPE entityType) {
 	switch (entityType) {
 	case GRID_TYPE::PLAYER: return 100; break;
-	default: return 0; break;
+	default: return 1; break;
+	}
+}
+
+void Treasure::OnCollision(Entity* entity) {
+	switch (entity->type) {
+	case GRID_TYPE::PLAYER: this->dead = true; break;
 	}
 }

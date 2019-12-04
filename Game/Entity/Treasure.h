@@ -10,7 +10,7 @@ public:
 	~Treasure();
 public:
 	float GetReward(GRID_TYPE entityType);
-
+	void OnCollision(Entity* entity);
 };
 
 #endif /* Treasure_H */

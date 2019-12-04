@@ -14,7 +14,7 @@ private:
 	float gamma;
 	std::random_device seeder;
 	std::mt19937 engine;
-	float* vtest;
+	float* vGrid;
 public:
 	Person(Window* window,
 		std::vector<Entity*>* entities,
@@ -25,10 +25,11 @@ public:
 		const char* spritePath);
 protected:
 	virtual std::vector<Entity::State*>* AddStates();
+	virtual float* GetVGrid();
 private:
 	float Equation(Entity::State* state, std::vector<Entity::State*>* states);
 	void Bellmans();
-	Entity::State* MaxState(float* ar, std::vector<Entity::State*>* states);
+	Entity::State* MaxState(std::vector<Entity::State*>* states);
 public:
 	void MakeMove();
 public:

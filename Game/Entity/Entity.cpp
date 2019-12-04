@@ -113,8 +113,6 @@ float Entity::GetReward(GRID_TYPE entityType) { return 0; }
 
 void Entity::OnLoop() {
 	this->OnAnimate();
-	if (this->dead)
-		printf("test");
 	for (Entity* entity : *this->entities) {
 		if (entity != this && entity->posX == this->posX && entity->posY == this->posY) {
 			this->OnCollision(entity);

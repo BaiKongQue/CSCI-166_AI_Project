@@ -14,20 +14,23 @@ Person::Person(Window* window,
 	vk(new float[this->vSize]),
 	gamma(0.01f),
 	engine(seeder()),
-	vtest(new float[(this->window->gridSizeX) * (this->window->gridSizeY)])
+	vGrid(nullptr)
 {
+
 	// fill array with initial values
 	for (int i = 0; i < this->vSize; i++) {
 		vk_1[i] = 0;
 		vk[i] = INTMAX_MIN;
 	}
+}
 
-	for (int i = 0; i < this->window->gridSizeX * this->window->gridSizeY; i++) {
-		this->vtest[i] = 0;
-	}
+float* Person::GetVGrid() {
+	return nullptr;
 }
 
 void Person::MakeMove() {
+	if (this->vGrid == nullptr)
+		this->vGrid = this->GetVGrid();
 	this->Bellmans();
 }
 
@@ -38,17 +41,17 @@ float Person::Equation(Entity::State* state, std::vector<Entity::State*>* states
 	for (Entity::State* s : *states) {
 		t = (s == state) ? 1 - (0.1 * (states->size() - 1)) : 0.1 * (states->size() - 1);
 		r = s->reward();
-		sum += (t * (r + (gamma * (this->vk_1[state->state] * this->vtest[state->pos]))));
+		sum += (t * (r + (gamma * this->vk_1[state->state] * this->vGrid[state->pos])));
 	}
 	return sum;
 }
-#include <iostream>
-void disp(float* ar) {
-	for (int i = 0; i < 5; i++) {
-		std::cout << (ar[i] < -10000 ? -1111 : ar[i]) << " ";
-	}
-	std::cout << std::endl;
-}
+//#include <iostream>
+//void disp(float* ar) {
+//	for (int i = 0; i < 5; i++) {
+//		std::cout << (ar[i] < -10000 ? -1111 : ar[i]) << " ";
+//	}
+//	std::cout << std::endl;
+//}
 void Person::Bellmans() {
 	// fill array with initial values
 	for (int i = 0; i < this->vSize; i++) {
@@ -65,17 +68,24 @@ void Person::Bellmans() {
 	for (int i = 0; i < 4; i++) {
 		for (Entity::State* state : *states) {
 			this->vk[state->state] = this->Equation(state, states);
-			this->vtest[state->pos] *= this->vk[state->state];
+			//this->vtest[state->pos] = (this->vtest[state->pos] == 0) ? this->vk[state->state] : this->vk[state->state] * this->vtest[state->pos];
 		}
-		for (int i = 0; i < this->vSize; i++) {
-			this->vk_1[i] = this->vk[i];
+		//for (int i = 0; i < this->vSize; i++) {
+		for (Entity::State* state : *states) {
+			this->vk_1[state->state] = this->vk[state->state];// *(this->vtest[state->pos] == 0 ? 1 : this->vtest[state->pos]);
 		}
 	}
+		//for (Entity::State* state : *states)
 	
 	//disp(this->vk);
 
-	Entity::State* maxState = this->MaxState(vk, states);
+	Entity::State* maxState = this->MaxState(states);
 	maxState->action();
+	if (this->vGrid[maxState->pos] == 0)
+		printf("A");
+	this->vGrid[maxState->pos] = this->gamma * this->vk[maxState->state];
+	if (this->vGrid[maxState->pos] == 0)
+		printf("a");
 
 	// delete all pointers
 	for (Entity::State *state : *states) { delete state; }
@@ -88,28 +98,28 @@ void Person::Bellmans() {
 
 }
 
-Entity::State* Person::MaxState(float* ar, std::vector<Entity::State*>* states) {
+Entity::State* Person::MaxState(std::vector<Entity::State*>* states) {
  	Entity::State* maxState = nullptr;
 	float maxVal = INTMAX_MIN;
 	for (Entity::State* state : *states) {
-		if (maxState == nullptr || ar[state->state] > maxVal) {
+		if (maxState == nullptr || this->vk[state->state] > maxVal) {
 			maxState = state;
-			maxVal = ar[state->state];
+			maxVal = this->vk[state->state];
 		}
 	}
 
 	if (maxState == nullptr) {
-		std::uniform_int_distribution<int> nrand(1, states->size() - 1);
+		std::uniform_int_distribution<int> nrand(0, states->size() - 1);
 		return states->at(nrand(this->engine));
 	}
 
 	std::vector<Entity::State*>* maxStates = new std::vector<Entity::State*>();
 	maxStates->push_back(maxState);
 	for (Entity::State* state : *states) {
-		if (ar[state->state] == ar[maxState->state])
+		if (this->vk[state->state] == this->vk[maxState->state])
 			maxStates->push_back(state);
 	}
-	std::uniform_int_distribution<int> nrand(1, maxStates->size() - 1);
+	std::uniform_int_distribution<int> nrand(0, maxStates->size() - 1);
 	maxState = maxStates->at(nrand(this->engine));
 	maxStates->clear();
 	maxStates->shrink_to_fit();
