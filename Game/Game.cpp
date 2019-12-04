@@ -5,10 +5,14 @@ Game::Game() :
 	gameWon(false),
 	window(nullptr),
 	display(nullptr),
-	entities(nullptr)
+	entities(nullptr),
+	turn(0),
+	playerAlive(true)
 {}
 
 void Game::LoadLevel(const char* level) {
+	this->ClearGame();
+
 	std::string line = "";
 	std::ifstream file(level);
 	int currIndex = 0;
@@ -47,6 +51,18 @@ void Game::LoadLevel(const char* level) {
 
 }
 
+void Game::ClearGame() {
+	this->entities->clear();
+	this->entities->shrink_to_fit();
+	
+	this->display->GetWalls()->clear();
+	this->display->GetWalls()->shrink_to_fit();
+
+	this->playerAlive = true;
+	this->turn = 0;
+	this->gameWon = false;
+}
+
 
 void Game::OnInit() {
 	// Initialize SDL
@@ -63,9 +79,26 @@ void Game::OnInit() {
 
 void Game::OnLoop() {
 	for (Entity* entity : *this->entities) {
-		if (entity->type == GRID_TYPE::PLAYER)
-			entity->MakeMove();
 		entity->OnLoop();										// Run each entity loop
+	}
+
+	for (int i = 0; i < this->entities->size(); i++) {
+		Entity* p = this->entities->at(i);
+		if (this->playerAlive && p->type == GRID_TYPE::PLAYER && p->dead) {
+			this->playerAlive = false;
+			this->gameWon = false;
+		}
+		if (p->type == GRID_TYPE::TREASURE && p->dead)
+			this->gameWon = true;
+		if (p->dead) {
+			this->entities->erase(this->entities->begin() + i);
+			delete p;
+		}
+	}
+
+	if (this->gameWon && this->playerAlive || !this->playerAlive) {
+		std::this_thread::sleep_for(std::chrono::seconds(2));
+		this->LoadLevel("./Assets/maps/level_2.txt");
 	}
 }
 
@@ -80,10 +113,27 @@ void Game::OnRender() {
 	this->window->UpdateScreen();								// update the screen with the render at the end
 }
 
+void Game::TakeTurn() {
+	while (this->running) {
+		while (this->running && this->playerAlive && !this->gameWon) {
+			for (Entity* entity : *this->entities) {
+				if (entity->type == GRID_TYPE::PLAYER && this->turn % 2 == 0)
+					entity->MakeMove();
+				else if (entity->type == GRID_TYPE::GUARD && this->turn % 2 == 1)
+					entity->MakeMove();
+			}
+			this->turn++;
+			std::this_thread::sleep_for(std::chrono::milliseconds(30));
+
+		}
+	}
+}
+
 void Game::Run() {
 	this->OnInit();
 
 	SDL_Event Event;
+	std::thread TurnThread(&Game::TakeTurn, this);
 	while (this->running) {
 		while (SDL_PollEvent(&Event)) {
 			//User requests quit
@@ -95,6 +145,7 @@ void Game::Run() {
 		this->OnLoop();
 		this->OnRender();
 	}
+	TurnThread.join();
 }
 
 Game::~Game() {
