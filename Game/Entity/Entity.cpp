@@ -57,6 +57,8 @@ void Entity::OnAnimate() {
 bool Entity::IsWall(int x, int y) {
 	int newPos = this->GetPos(x, y);
 	for (int i : *this->walls) {
+		if (i > newPos)
+			return false;
 		if (newPos == i)
 			return true;
 	}
@@ -64,47 +66,14 @@ bool Entity::IsWall(int x, int y) {
 	return false;
 }
 
-std::vector<Entity::State*>* Entity::GetStates() {
-	std::vector<Entity::State*>* states = new std::vector<Entity::State*>();
-
-	// retrieve all states
-	for (int i : {-1, 0, 1}) {
-		for (int j : { -1, 0, 1 }) {
-			int x = i + this->posX;
-			int y = j + this->posY;
-
-			if (
-				((i == 0) != (j == 0))
-				&& (x >= 0 && x < this->window->gridSizeX)
-				&& (y >= 0 && y < this->window->gridSizeY)
-				&& (!this->IsWall(x, y))
-			) {
-				STATE state = (i == 0 && j == -1) ? STATE::NORTH :
-					(i == 1 && j == 0) ? STATE::EAST :
-					(i == 0 && j == 1) ? STATE::SOUTH :
-					STATE::WEST;
-				states->push_back(new Entity::State{
-					state,
-					this->GetPos(x, y),
-					[=]()->void {
-						if (!this->IsWall(x, y)) {
-							this->posX = x;
-							this->posY = y;
-						}
-					},
-					[=]()->int {
-						for (Entity* entity : *this->entities) {
-							if (entity->posX == x && entity->posY == y)
-								return entity->GetReward(this->type);
-						}
-						return 1;
-					}
-				});
-			}
-		}
+bool Entity::IsWall(int pos) {
+	for (int i : *this->walls) {
+		if (i > pos)
+			return false;
+		if (pos == i)
+			return true;
 	}
-
-	return states;
+	return false;
 }
 
 void Entity::MakeMove() {}

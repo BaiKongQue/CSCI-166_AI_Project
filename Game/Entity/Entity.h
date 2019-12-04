@@ -45,8 +45,8 @@ public:
 private:
 	void OnAnimate();
 protected:
+	bool IsWall(int pos);
 	bool IsWall(int x, int y);
-	std::vector<State*>* GetStates();
 	virtual void OnCollision(Entity* entity);
 public:
 	virtual float GetReward(GRID_TYPE entityType);

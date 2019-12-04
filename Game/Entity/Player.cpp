@@ -1,24 +1,15 @@
 #include "Player.h"
 
-float* Player::vGrid = nullptr;
-
 Player::Player(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos):
     Person(window, entities, walls, spawnPos, GRID_TYPE::PLAYER, 4, "archer_sprite.png"),
 	arrows(0),
 	isArrowNocked(false)
-{
-	if (Player::vGrid == nullptr) {
-		Player::vGrid = new float[this->window->gridSizeX * this->window->gridSizeY];
-		for (int i = 0; i < this->window->gridSizeX * this->window->gridSizeY; i++) {
-			Player::vGrid[i] = 1;
-		}
-	}
-}
+{}
 
 float Player::GetReward(GRID_TYPE entityType) {
 	switch (entityType) {
 	case GRID_TYPE::GUARD: return 10; break;
-	default: return 1; break;
+	default: return 0; break;
 	}
 }
 
@@ -97,8 +88,4 @@ void Player::OnCollision(Entity* entity) {
 		this->dead = true;
 		break;
 	}
-}
-
-float* Player::GetVGrid() {
-	return Player::vGrid;
 }

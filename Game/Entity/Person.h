@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include <iterator>
 #include <random>
+#include <tuple>
 
 class Person : public Entity {
 private:
@@ -14,7 +15,6 @@ private:
 	float gamma;
 	std::random_device seeder;
 	std::mt19937 engine;
-	float* vGrid;
 public:
 	Person(Window* window,
 		std::vector<Entity*>* entities,
@@ -25,13 +25,13 @@ public:
 		const char* spritePath);
 protected:
 	virtual std::vector<Entity::State*>* AddStates();
-	virtual float* GetVGrid();
 private:
+	std::vector<Entity::State*>* GetStates(int pos);
 	float Equation(Entity::State* state, std::vector<Entity::State*>* states);
 	void Bellmans();
-	Entity::State* MaxState(std::vector<Entity::State*>* states);
+	void MaxState();
 public:
-	void MakeMove();
+	virtual void MakeMove();
 public:
 	~Person();
 };

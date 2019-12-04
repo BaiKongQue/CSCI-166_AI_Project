@@ -8,18 +8,12 @@ class Player : public Person {
 private:
 	int arrows;
 	bool isArrowNocked;
-	static float* vGrid;
 public:
 	Player(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos);
-private:
-	void PickUpArrow();
 protected:
 	virtual std::vector<Entity::State*>* AddStates();
 	void OnCollision(Entity* arrow);
-	float* GetVGrid();
 public:
-	void NockArrow();
-	void FireArrow();
 	float GetReward(GRID_TYPE entityType);
 public:
 	~Player();

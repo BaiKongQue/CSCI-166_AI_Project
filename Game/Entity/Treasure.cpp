@@ -7,7 +7,7 @@ Treasure::Treasure(Window* window, std::vector<Entity*>* entities, std::vector<i
 float Treasure::GetReward(GRID_TYPE entityType) {
 	switch (entityType) {
 	case GRID_TYPE::PLAYER: return 100; break;
-	default: return 1; break;
+	default: return 0; break;
 	}
 }
 

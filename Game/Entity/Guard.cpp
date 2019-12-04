@@ -16,7 +16,8 @@ Guard::Guard(Window* window, std::vector<Entity*>* entities, std::vector<int>* w
 float Guard::GetReward(GRID_TYPE entityType) {
 	switch (entityType) {
 	case GRID_TYPE::PLAYER: return -10; break;
-	default: return 1; break;
+	case GRID_TYPE::GUARD: return -0.1; break;
+	default: return 0; break;
 	}
 }
 
