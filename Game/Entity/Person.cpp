@@ -16,7 +16,7 @@ Person::Person(Window* window,
 {}
 
 float* Person::GetVk() { return nullptr; }
-int Person::GetIterNum() { return 4; }
+int Person::GetIterNum() { return 3; }
 
 void Person::LoadVk() {
 	this->vk = this->GetVk();
@@ -72,10 +72,19 @@ std::vector<Entity::State*>* Person::GetStates(int pos) {
 std::vector<Entity::State*>* Person::AddStates(int pos) {
 	return new std::vector<Entity::State*>();
 }
-
+#include <iostream>
 void Person::MakeMove() {
 	this->Bellmans();
 	this->MaxState();
+	for (int i = 0; i < this->vSize; i++) {
+		if (i % 20 == 0) printf("\n");
+		if (this->IsWall(i))
+			printf("X");
+		else
+			std::cout << this->vk[i];
+		if (i % 20 != 19) printf(",");
+	}
+	printf("\n------\n");
 }
 
 float Person::Equation(Entity::State* state, std::vector<Entity::State*>* states) {

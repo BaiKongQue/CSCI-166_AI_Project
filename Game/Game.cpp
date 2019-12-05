@@ -7,10 +7,11 @@ Game::Game() :
 	display(nullptr),
 	entities(nullptr),
 	turn(0),
-	playerAlive(true)
+	playerAlive(true),
+	currLevel(2)
 {}
 
-void Game::LoadLevel(const char* level) {
+void Game::LoadLevel(std::string level) {
 	this->ClearGame();
 
 	std::string line = "";
@@ -88,32 +89,14 @@ void Game::OnLoop() {
 		}
 	}
 	
-	for (int i = 0; i < this->entities->size(); i++) {
-		Entity* p = this->entities->at(i);
-		if (this->playerAlive && p->type == GRID_TYPE::PLAYER && p->dead) {
-			this->playerAlive = false;
-			this->gameWon = false;
-		}
-
-		if (p->type == GRID_TYPE::TREASURE && p->dead) {
-			this->gameWon = true;
-		}
-
-		if (p->type == GRID_TYPE::GUARD && p->dead && Guard::count - 1 <= 0) {
-			this->gameWon = true;
-		} else if (p->type == GRID_TYPE::GUARD && p->dead) {
-			Guard::count--;
-		}
-
-		if (p->dead) {
-			this->entities->erase(this->entities->begin() + i);
-			delete p;
-		}
-	}
+	this->WinCondition();
 
 	if (this->gameWon && this->playerAlive || !this->playerAlive) {
 		std::this_thread::sleep_for(std::chrono::seconds(2));
-		this->LoadLevel("./Assets/maps/level_2.txt");
+		if (this->playerAlive)
+			this->currLevel++;
+		std::string src = "./Assets/maps/level_" + std::to_string(this->currLevel) + ".txt";
+		this->LoadLevel(src);
 	}
 
 	this->turn++;
@@ -131,19 +114,28 @@ void Game::OnRender() {
 	this->window->UpdateScreen();								// update the screen with the render at the end
 }
 
-void Game::TakeTurn() {
-	return;
-	while (this->running) {
-		while (this->running && this->playerAlive && !this->gameWon) {
-			for (Entity* entity : *this->entities) {
-				if (entity->type == GRID_TYPE::PLAYER && this->turn % 2 == 0)
-					entity->MakeMove();
-				else if (entity->type == GRID_TYPE::GUARD && this->turn % 2 == 1)
-					entity->MakeMove();
-			}
-			this->turn++;
-			std::this_thread::sleep_for(std::chrono::milliseconds(30));
+void Game::WinCondition() {
+	for (int i = 0; i < this->entities->size(); i++) {
+		Entity* p = this->entities->at(i);
+		if (this->playerAlive && p->type == GRID_TYPE::PLAYER && p->dead) {
+			this->playerAlive = false;
+			this->gameWon = false;
+		}
 
+		if (p->type == GRID_TYPE::TREASURE && p->dead) {
+			this->gameWon = true;
+		}
+
+		if (p->type == GRID_TYPE::GUARD && p->dead && Guard::count - 1 <= 0) {
+			this->gameWon = true;
+		}
+		else if (p->type == GRID_TYPE::GUARD && p->dead) {
+			Guard::count--;
+		}
+
+		if (p->dead) {
+			this->entities->erase(this->entities->begin() + i);
+			delete p;
 		}
 	}
 }
@@ -152,7 +144,6 @@ void Game::Run() {
 	this->OnInit();
 
 	SDL_Event Event;
-	std::thread TurnThread(&Game::TakeTurn, this);
 	while (this->running) {
 		while (SDL_PollEvent(&Event)) {
 			//User requests quit
@@ -164,7 +155,6 @@ void Game::Run() {
 		this->OnLoop();
 		this->OnRender();
 	}
-	TurnThread.join();
 }
 
 Game::~Game() {

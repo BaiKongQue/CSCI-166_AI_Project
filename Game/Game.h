@@ -14,6 +14,7 @@ private:
 	bool playerAlive;
 	bool gameWon;		// if the game is won
 	int turn;
+	int currLevel;
 private:
 	Window* window;
 	Display* display;
@@ -21,14 +22,14 @@ private:
 public:
 	Game();
 private:
-	void LoadLevel(const char* level);
+	void LoadLevel(std::string level);
 	void ClearGame();
 private:
 	void OnInit();
 	void OnLoop();
 	void OnRender();
+	void WinCondition();
 public:
-	void TakeTurn();
 	void Run();
 public:
 	~Game();
