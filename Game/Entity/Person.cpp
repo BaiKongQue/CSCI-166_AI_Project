@@ -12,8 +12,7 @@ Person::Person(Window* window,
 	vSize(this->window->gridSizeX* this->window->gridSizeY),
 	vk(nullptr),
 	gamma(0.01f),
-	engine(seeder()),
-	prevPos(spawnPos)
+	engine(seeder())
 {}
 
 float* Person::GetVk() { return nullptr; }
