@@ -3,6 +3,7 @@
 #define Arrow_H
 
 #include "Object.h"
+#include "Player.h"
 
 class Arrow : public Object {
 public:
@@ -10,7 +11,6 @@ public:
 	~Arrow();
 public:
 	float GetReward(GRID_TYPE entityType);
-
 };
 
 #endif /* Arrow_H */

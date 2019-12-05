@@ -5,11 +5,12 @@ Display::Display(Window* window) :
     walls(nullptr),
     levelMsgTexture(nullptr),
     grassTexture(nullptr),
-    wallTexture(nullptr)
+    wallTexture(nullptr),
+	currRect(new SDL_Rect{ 0, 0, this->window->bitSize, this->window->bitSize })
 {
 	this->walls = new std::vector<int>();
-    this->wallTexture = window->LoadImageTexture("./Assets/images/wall_texture.png");
-    this->grassTexture = window->LoadImageTexture("./Assets/images/grass_texture.png");
+    this->wallTexture = this->window->LoadImageTexture("./Assets/images/wall_texture.png");
+    this->grassTexture = this->window->LoadImageTexture("./Assets/images/grass_texture.png");
 }
 
 std::vector<int>* Display::GetWalls() {
@@ -27,28 +28,24 @@ void Display::ClearWalls() {
 
 void Display::OnRender() {
     int size = this->window->gridSizeY * this->window->gridSizeX;
-    SDL_Rect* currRect = new SDL_Rect{0, 0, this->window->bitSize, this->window->bitSize};
     int currWall = 0;
     
     for (int i = 0; i < size; ++i) {
-        int x = i % this->window->gridSizeX;
-        int y = i / this->window->gridSizeY;
-        currRect->x = x;
-        currRect->y = y;
-        if (i == this->walls->at(currWall)) {
+        currRect->x = (i % this->window->gridSizeX) * this->window->bitSize;
+        currRect->y = (i / this->window->gridSizeY) * this->window->bitSize;
+        if (currWall < this->walls->size() && i == this->walls->at(currWall)) {
             this->window->Draw(this->wallTexture, currRect, nullptr);
             ++currWall;
-        }
-        else {
+        } else {
             this->window->Draw(this->grassTexture, currRect, nullptr);
         }
         
     }
 
-    delete currRect;
 }
 
 Display::~Display() {
+    delete this->currRect;
     this->ClearWalls();
     delete this->walls;
     SDL_DestroyTexture(levelMsgTexture);

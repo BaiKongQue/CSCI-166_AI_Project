@@ -23,6 +23,7 @@ private:
     SDL_Texture* grassTexture;
     SDL_Texture* wallTexture;
     std::vector<int>* walls;
+	SDL_Rect* currRect;
 public:
     Display(Window*);
 public:

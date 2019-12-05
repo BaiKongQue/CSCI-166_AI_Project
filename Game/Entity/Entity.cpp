@@ -21,24 +21,30 @@ Entity::Entity(Window* window,
 	frameRate(100),
 	oldTime(0),
 	dead(false),
-	spriteTexture(nullptr)
+	spriteTexture(nullptr),
+	srcRect(new SDL_Rect{ 0, 0, this->window->bitSize, this->window->bitSize }),
+	destRect(new SDL_Rect{ 0, 0, this->window->bitSize, this->window->bitSize })
 {
+	// if sprite cache is empty initialize it
 	if (Entity::spriteCache.empty()) {
 		for (int i = 0; i < 4; i++) {
 			Entity::spriteCache.push_back(nullptr);
 		}
 	}
 
-	if (Entity::spriteCache[(type - 1)] == nullptr) {
+	// get sprite from sprite cache if not exist add it
+	if (Entity::spriteCache[(type - 2)] == nullptr) {
 		std::string path = "./Assets/images/";
 		path += spritePath;
-		Entity::spriteCache[(type - 1)] = this->window->LoadImageTexture(path.c_str());
+		Entity::spriteCache[(type - 2)] = this->window->LoadImageTexture(path.c_str());
 	}
-	this->spriteTexture = Entity::spriteCache[(type - 1)];
+	this->spriteTexture = Entity::spriteCache[(type - 2)];
+
+
 }
 
 void Entity::OnAnimate() {
-	if (this->oldTime + this->frameRate > SDL_GetTicks())
+	if (this->numFrames <= 0 || this->oldTime + this->frameRate > SDL_GetTicks())
 		return;
 
 	this->oldTime = SDL_GetTicks();
@@ -49,82 +55,39 @@ void Entity::OnAnimate() {
 }
 
 bool Entity::IsWall(int x, int y) {
-	int newPos = this->GetPos(x, y);
+	return this->IsWall(this->GetPos(x, y));
+}
+
+bool Entity::IsWall(int pos) {
 	for (int i : *this->walls) {
-		if (newPos > i)
-			break;
-		if (newPos == i)
+		if (i > pos)
+			return false;
+		if (pos == i)
 			return true;
 	}
-
 	return false;
 }
 
-std::vector<Entity::State*>* Entity::GetStates() {
-	std::vector<Entity::State*>* states = new std::vector<Entity::State*>();
-
-	// retrieve all states
-	for (int i : {-1, 0, 1}) {
-		for (int j : { -1, 0, 1 }) {
-			int x = i + this->posX;
-			int y = j + this->posY;
-
-			if (
-				((i == 0) != (j == 0))
-				&& (x >= 0 && x < this->window->gridSizeX)
-				&& (y >= 0 && y < this->window->gridSizeY)
-				&& (!this->IsWall(x, y))
-			) {
-				STATE state = (i == 0 && j == -1) ? STATE::NORTH :
-					(i == 1 && j == 0) ? STATE::EAST :
-					(i == 0 && j == 1) ? STATE::SOUTH :
-					STATE::WEST;
-				states->push_back(new Entity::State{
-					state,
-					[=]()->void {
-						this->posX = x;
-						this->posY = y;
-					},
-					[=]()->int {
-						for (Entity* entity : *this->entities) {
-							if (entity->posX == x && entity->posY == y)
-								return entity->GetReward(this->type);
-						}
-						return 1;
-					}
-				});
-			}
-		}
-	}
-
-	return states;
-}
-
 void Entity::MakeMove() {}
-void Entity::OnCollision(GRID_TYPE entityType) {}
+void Entity::OnCollision(Entity* entity) {}
 float Entity::GetReward(GRID_TYPE entityType) { return 0; }
 
 void Entity::OnLoop() {
 	this->OnAnimate();
+	for (Entity* entity : *this->entities) {
+		if (entity != this && entity->posX == this->posX && entity->posY == this->posY) {
+			this->OnCollision(entity);
+		}
+	}
 }
 
 void Entity::OnRender() {
-	SDL_Rect* srcRect = new SDL_Rect();
-	srcRect->w = this->window->bitSize;
-	srcRect->h = this->window->bitSize;
-	srcRect->x = this->currFrame * this->window->bitSize;
-	srcRect->y = 0;
+	this->srcRect->x = this->currFrame * this->window->bitSize;
 
-	SDL_Rect* destRect = new SDL_Rect();
-	destRect->w = this->window->bitSize;
-	destRect->h = this->window->bitSize;
-	destRect->x = this->posX * this->window->bitSize;
-	destRect->y = this->posY * this->window->bitSize;
+	this->destRect->x = this->posX * this->window->bitSize;
+	this->destRect->y = this->posY * this->window->bitSize;
 
-	this->window->Draw(this->spriteTexture, destRect, srcRect);
-
-	delete srcRect;
-	delete destRect;
+	this->window->Draw(this->spriteTexture, this->destRect, this->srcRect);
 }
 
 int Entity::GetX(int pos) {
@@ -146,4 +109,6 @@ Entity::~Entity() {
 	this->oldTime = 0;
 	this->dead = false;
 	this->spriteTexture = nullptr;
+	delete this->srcRect;
+	delete this->destRect;
 }

@@ -3,9 +3,18 @@
 #define Person_H
 
 #include "Entity.h"
-#include <limits>
+#include <iterator>
+#include <random>
+#include <tuple>
 
 class Person : public Entity {
+private:
+	int vSize;
+	float* vk;
+	float gamma;
+	std::random_device seeder;
+	std::mt19937 engine;
+protected:
 public:
 	Person(Window* window,
 		std::vector<Entity*>* entities,
@@ -15,17 +24,17 @@ public:
 		int numberFrames,
 		const char* spritePath);
 private:
-	void die();
+	std::vector<Entity::State*>* GetStates(int pos);
+	float Equation(Entity::State* state, std::vector<Entity::State*>* states);
 protected:
-	virtual bool CanMove(int newX, int newY);
-	virtual void OnMove(int newX, int newY);
-	virtual std::vector<Entity::State*>* AddStates();
-private:
-	float Equation(float* vk_1, Entity::State* state, std::vector<Entity::State*>* states);
 	void Bellmans();
-	Entity::State* MaxState(float* ar, std::vector<Entity::State*>* states);
+	void MaxState();
+	virtual int GetIterNum();
+	virtual std::vector<Entity::State*>* AddStates(int pos);
+	virtual float* GetVk();
 public:
-	void MakeMove();
+	virtual void MakeMove();
+	void LoadVk();
 public:
 	~Person();
 };

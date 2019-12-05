@@ -5,18 +5,22 @@ Game::Game() :
 	gameWon(false),
 	window(nullptr),
 	display(nullptr),
-	entities(nullptr)
+	entities(nullptr),
+	turn(0),
+	playerAlive(true),
+	currLevel(2)
 {}
 
-void Game::LoadLevel(const char* level) {
+void Game::LoadLevel(std::string level) {
+	this->ClearGame();
+
 	std::string line = "";
 	std::ifstream file(level);
 	int currIndex = 0;
 
 	if (file.is_open()) {
 		while (std::getline(file, line)) {
-			for (int i = 0; i < line.size(); ++i, ++currIndex) {
-
+			for (int i = 0; i < line.size(); ++i) {
 				switch (line[i] - '0') {
 				case GRID_TYPE::WALL:
 					this->display->AddWall(currIndex);
@@ -41,10 +45,23 @@ void Game::LoadLevel(const char* level) {
 				default:
 					break;
 				}
+				if (line[i] != ' ') currIndex++;
 			}
 		}
 	}
 
+}
+
+void Game::ClearGame() {
+	this->entities->clear();
+	this->entities->shrink_to_fit();
+	
+	this->display->GetWalls()->clear();
+	this->display->GetWalls()->shrink_to_fit();
+
+	this->playerAlive = true;
+	this->turn = 0;
+	this->gameWon = false;
 }
 
 
@@ -54,17 +71,36 @@ void Game::OnInit() {
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 		return;
 	}
-    this->LoadLevel("./Assets/maps/level_1.txt");
 	this->window = new Window();								// Create window
 	this->entities = new std::vector<Entity*>();				// Create entity array
 	this->display = new Display(this->window);	// Create Displays
+    this->LoadLevel("./Assets/maps/level_2.txt");
 	this->running = true;
 }
 
 void Game::OnLoop() {
 	for (Entity* entity : *this->entities) {
 		entity->OnLoop();										// Run each entity loop
+		if (entity->type == GRID_TYPE::PLAYER && this->turn % 2 == 0) {
+			entity->MakeMove();
+		} else if (entity->type == GRID_TYPE::GUARD && this->turn % 2 == 1) {
+			entity->MakeMove();
+			Guard::canCalculate = false;
+		}
 	}
+	
+	this->WinCondition();
+
+	if (this->gameWon && this->playerAlive || !this->playerAlive) {
+		std::this_thread::sleep_for(std::chrono::seconds(2));
+		if (this->playerAlive)
+			this->currLevel++;
+		std::string src = "./Assets/maps/level_" + std::to_string(this->currLevel) + ".txt";
+		this->LoadLevel(src);
+	}
+
+	this->turn++;
+	Guard::canCalculate = true;
 }
 
 void Game::OnRender() {
@@ -76,6 +112,32 @@ void Game::OnRender() {
 	}
 
 	this->window->UpdateScreen();								// update the screen with the render at the end
+}
+
+void Game::WinCondition() {
+	for (int i = 0; i < this->entities->size(); i++) {
+		Entity* p = this->entities->at(i);
+		if (this->playerAlive && p->type == GRID_TYPE::PLAYER && p->dead) {
+			this->playerAlive = false;
+			this->gameWon = false;
+		}
+
+		if (p->type == GRID_TYPE::TREASURE && p->dead) {
+			this->gameWon = true;
+		}
+
+		if (p->type == GRID_TYPE::GUARD && p->dead && Guard::count - 1 <= 0) {
+			this->gameWon = true;
+		}
+		else if (p->type == GRID_TYPE::GUARD && p->dead) {
+			Guard::count--;
+		}
+
+		if (p->dead) {
+			this->entities->erase(this->entities->begin() + i);
+			delete p;
+		}
+	}
 }
 
 void Game::Run() {

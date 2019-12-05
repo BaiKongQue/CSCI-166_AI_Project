@@ -7,16 +7,14 @@
 class Player : public Person {
 private:
 	int arrows;
-	bool isArrowNocked;
+	static float* vk;
 public:
 	Player(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos);
-private:
-	void PickUpArrow();
 protected:
-	virtual std::vector<Entity::State*>* AddStates();
+	std::vector<Entity::State*>* AddStates(int pos);
+	void OnCollision(Entity* arrow);
+	float* GetVk();
 public:
-	void NockArrow();
-	void FireArrow();
 	float GetReward(GRID_TYPE entityType);
 public:
 	~Player();
