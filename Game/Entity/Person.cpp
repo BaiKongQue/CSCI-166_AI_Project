@@ -9,14 +9,23 @@ Person::Person(Window* window,
 	const char* spritePath
 ) :
 	Entity(window, entities, walls, spawnPos, type, numberFrames, spritePath),
-	vSize(this->window->gridSizeX * this->window->gridSizeY),
-	vk(new float[this->vSize]),
+	vSize(this->window->gridSizeX* this->window->gridSizeY),
+	vk(nullptr),
 	gamma(0.01f),
-	engine(seeder())
-{
-	// fill array with initial values
-	for (int i = 0; i < this->vSize; i++) {
-		this->vk[i] = 0;
+	engine(seeder()),
+	prevPos(spawnPos)
+{}
+
+float* Person::GetVk() { return nullptr; }
+int Person::GetIterNum() { return 4; }
+
+void Person::LoadVk() {
+	this->vk = this->GetVk();
+	if (this->vk == nullptr) {
+		this->vk = new float[this->vSize];
+		for (int i = 0; i < this->vSize; i++) {
+			this->vk[i] = 0;
+		}
 	}
 }
 
@@ -61,8 +70,13 @@ std::vector<Entity::State*>* Person::GetStates(int pos) {
 	return states;
 }
 
+std::vector<Entity::State*>* Person::AddStates(int pos) {
+	return new std::vector<Entity::State*>();
+}
+
 void Person::MakeMove() {
 	this->Bellmans();
+	this->MaxState();
 }
 
 float Person::Equation(Entity::State* state, std::vector<Entity::State*>* states) {
@@ -76,29 +90,15 @@ float Person::Equation(Entity::State* state, std::vector<Entity::State*>* states
 	}
 	return sum;
 }
-#include <iostream>
-//void disp(float* ar) {
-//	for (int i = 0; i < 5; i++) {
-//		std::cout << (ar[i] < -10000 ? -1111 : ar[i]) << " ";
-//	}
-//	std::cout << std::endl;
-//}
+
 void Person::Bellmans() {
-	// fill array with initial values
-	/*for (int i = 0; i < this->vSize; i++) {
-		vk[i] = 0;
-	}*/
-
-
 	std::vector<Entity::State*>* states = nullptr;
 	std::vector<Entity::State*>* addStates = nullptr;
 
 	// run value iteration
-	for (int c = 0; c < 3; c++) {
+	for (int c = 0; c < this->GetIterNum(); c++) {
 		for (int i = 0; i < this->vSize; i++) {
-			//if (i % 20 == 0) std::cout << std::endl;
 			if (this->IsWall(i)) {
-				//std::cout << "X ";
 				continue;
 			}
 			bool found = false;
@@ -106,31 +106,24 @@ void Person::Bellmans() {
 				int pos = this->GetPos(entity->posX, entity->posY);
 				if (entity != this && i == pos) {
 					this->vk[i] = entity->GetReward(this->type);
-					//std::cout << this->vk[i] << " ";
 					found = true;
 					break;
 				}
 			}
 			if (found) continue;
-			std::vector<Entity::State*>* states = this->GetStates(i);
-			std::vector<Entity::State*>* addStates = this->AddStates();
+			states = this->GetStates(i);
+			addStates = this->AddStates(i);
 			
 			states->insert(states->end(), addStates->begin(), addStates->end());
 			
-			float* val = new float[5];
+			float max = INTMAX_MIN;
 			for (Entity::State* state : *states) {
-				val[state->state] = this->Equation(state, states);
+				float val = this->Equation(state, states);
+				if (val > max)
+					max = val;
 			}
 
-			int max = -1;
-			for (int j = 0; j < 5; j++) {
-				if (max == -1 || val[j] > val[max])
-					max = j;
-			}
-			this->vk[i] = val[max];
-			delete[] val;
-
-			//std::cout << this->vk[i] << " ";
+			this->vk[i] = max;
 
 			for (Entity::State *state : *states) { delete state; }
 			states->clear();
@@ -140,19 +133,15 @@ void Person::Bellmans() {
 			delete states;
 			delete addStates;
 		}
-		//std::cout << "----------" << std::endl;
 	}
-
-	this->MaxState();
-
-	// delete all pointers
-	delete states;
-	delete addStates;
-
 }
 
 void Person::MaxState() {
 	std::vector<Entity::State*>* states = this->GetStates(this->GetPos(this->posX, this->posY));
+	std::vector<Entity::State*>* addStates = this->AddStates(this->GetPos(this->posX, this->posY));
+
+	states->insert(states->end(), addStates->begin(), addStates->end());
+
  	Entity::State* maxState = nullptr;
 	for (Entity::State* state : *states) {
 		if (maxState == nullptr || this->vk[state->pos] > this->vk[maxState->pos]) {
@@ -163,7 +152,7 @@ void Person::MaxState() {
 	std::vector<Entity::State*>* maxStates = new std::vector<Entity::State*>();
 	maxStates->push_back(maxState);
 	for (Entity::State* state : *states) {
-		if (this->vk[state->pos] == this->vk[maxState->pos])
+		if (state != maxState && this->vk[state->pos] == this->vk[maxState->pos])
 			maxStates->push_back(state);
 	}
 	std::uniform_int_distribution<int> nrand(0, maxStates->size() - 1);
@@ -173,13 +162,18 @@ void Person::MaxState() {
 	delete maxStates;
 	
 	maxState->action();
-}
 
-std::vector<Entity::State*>* Person::AddStates() {
-	return new std::vector<Entity::State*>();
+	for (Entity::State* state : *states) {
+		delete state;
+	}
+	states->clear();
+	states->shrink_to_fit();
+	addStates->clear();
+	addStates->shrink_to_fit();
+	delete states;
+	delete addStates;
 }
 
 Person::~Person() {
-	delete[] vk;
-	delete[] vk_1;
+	//delete[] vk;
 }

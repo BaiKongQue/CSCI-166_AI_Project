@@ -1,16 +1,14 @@
 #include "Guard.h"
 
-float* Guard::vGrid = nullptr;
+float* Guard::vk = nullptr;
+bool Guard::canCalculate = true;
+int Guard::count = 0;
 
-Guard::Guard(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos):
-    Person(window, entities, walls, spawnPos, GRID_TYPE::GUARD, 8, "enemy_sprite.png")
+Guard::Guard(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos) :
+	Person(window, entities, walls, spawnPos, GRID_TYPE::GUARD, 8, "enemy_sprite.png")
 {
-	if (Guard::vGrid == nullptr) {
-		Guard::vGrid = new float[this->window->gridSizeX * this->window->gridSizeY];
-		for (int i = 0; i < this->window->gridSizeX * this->window->gridSizeY; i++) {
-			Guard::vGrid[i] = 1;
-		}
-	}
+	this->LoadVk();
+	Guard::count++;
 }
 
 float Guard::GetReward(GRID_TYPE entityType) {
@@ -21,6 +19,16 @@ float Guard::GetReward(GRID_TYPE entityType) {
 	}
 }
 
-float* Guard::GetVGrid() {
-	return Guard::vGrid;
+float* Guard::GetVk() {
+	return Guard::vk;
+}
+
+int Guard::GetIterNum() {
+	return 10;
+}
+
+void Guard::MakeMove() {
+	if (Guard::canCalculate)
+		this->Bellmans();
+	this->MaxState();
 }

@@ -55,15 +55,7 @@ void Entity::OnAnimate() {
 }
 
 bool Entity::IsWall(int x, int y) {
-	int newPos = this->GetPos(x, y);
-	for (int i : *this->walls) {
-		if (i > newPos)
-			return false;
-		if (newPos == i)
-			return true;
-	}
-
-	return false;
+	return this->IsWall(this->GetPos(x, y));
 }
 
 bool Entity::IsWall(int pos) {
