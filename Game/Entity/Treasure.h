@@ -1,10 +1,16 @@
+#pragma once
 #ifndef Treasure_H
 #define Treasure_H
 
-class Treasure {
+#include "Object.h"
+
+class Treasure : public Object {
 public:
-    Treasure();
-    
+    Treasure(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos);
+	~Treasure();
+public:
+	float GetReward(GRID_TYPE entityType);
+	void OnCollision(Entity* entity);
 };
 
 #endif /* Treasure_H */

@@ -4,9 +4,22 @@
 
 #include "Person.h"
 
-class Guard : Person {
+class Guard : public Person {
+private:
+	static float* vk;
 public:
-	Guard();
+	static bool canCalculate;
+	static int count;
+public:
+	Guard(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos);
+	~Guard();
+protected:
+	float* GetVk();
+	int GetIterNum();
+public:
+	float GetReward(GRID_TYPE entityType);
+	void MakeMove();
+
 };
 
 #endif /* GUARD_H */

@@ -1,11 +1,21 @@
+#pragma once
 #ifndef Object_H
 #define Object_H
 
 #include "Entity.h"
 
-class Object : Entity {
+class Object : public Entity {
 public:
-    Object();
+    Object(Window* window,
+		std::vector<Entity*>* entities,
+		std::vector<int>* walls,
+		int spawnPos,
+		GRID_TYPE type,
+		int numberFrames,
+		const char* spritePath);
+	~Object();
+public:
+	void MakeMove();
 };
 
 #endif /* Object_H */

@@ -1,7 +1,7 @@
 #pragma once
 
 enum GRID_TYPE {
-	NONE = 0,
+	EMPTY = 0,
 	WALL,
 	PLAYER,
 	GUARD,

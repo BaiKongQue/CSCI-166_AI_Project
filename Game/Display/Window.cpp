@@ -4,7 +4,6 @@ Window::Window() :
 	window(nullptr),
 	renderer(nullptr),
 	font(nullptr),
-	fpsControl(nullptr),
 	bitSize(32),
 	gridSizeX(20),
 	gridSizeY(20),
@@ -13,6 +12,17 @@ Window::Window() :
 {
 	this->windowWidth = this->gridSizeX * this->bitSize;
 	this->windowHeight = this->gridSizeY * this->bitSize;
+
+	// initialize Img
+	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+		return;
+	}
+
+	// initialize ttf
+	if (TTF_Init() == -1) {
+		printf("SDL_TTF could not initialize! SDL_TTF Error: %s\n", TTF_GetError());
+	}
 
 	// initialize Window
 	this->window = SDL_CreateWindow(
@@ -36,19 +46,12 @@ Window::Window() :
 	}
 
 	// initialize Font
-	this->font = TTF_OpenFont("FreeSans.ttf", 28);
+	this->font = TTF_OpenFont("./Assets/fonts/FreeSans.ttf", 28);
 	if (this->font == nullptr) {
 		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
 		return;
 	}
-	
-	// initialize Img
-	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
-		return;
-	}
 
-	this->fpsControl = new FPS();
 }
 
 SDL_Texture* Window::LoadImageTexture(const char* path) {
@@ -62,12 +65,13 @@ SDL_Texture* Window::LoadImageTexture(const char* path) {
 	SDL_Texture* newTexture = SDL_CreateTextureFromSurface(this->renderer, tempSurface);
 
 	SDL_FreeSurface(tempSurface);
-	delete tempSurface;
+	// delete tempSurface;
+	tempSurface = nullptr;
 
 	if (!newTexture)
 		return nullptr;
 
-	delete path;
+	// delete path;
 	return newTexture;
 }
 
@@ -91,27 +95,32 @@ void Window::ClearScreen() {
 	SDL_RenderClear(this->renderer);
 }
 
-void Window::Draw(SDL_Texture* src, SDL_Rect& srcRect, SDL_Rect& destRect) {
+void Window::Draw(SDL_Texture* src, SDL_Rect* destRect, SDL_Rect* srcRect = nullptr) {
 	if (!src) {
 		printf("Failed rendering image, src is empty!");
 		return;
 	}
 
-	SDL_RenderCopy(this->renderer, src, &srcRect, &destRect);
+	SDL_RenderCopy(this->renderer, src, srcRect, destRect);
+}
+
+void Window::UpdateScreen() {
+	SDL_RenderPresent(this->renderer);
 }
 
 Window::~Window() {
 	// free font
 	TTF_CloseFont(this->font);
-	delete this->font;
+	//delete this->font;
+	this->font = nullptr;
 
 	// destroy window    
 	SDL_DestroyRenderer(this->renderer);
 	SDL_DestroyWindow(this->window);
-	delete this->renderer;
-	delete this->window;
+	this->renderer = nullptr;
+	this->window = nullptr;
 
-	// Destroy fps controller
-	delete this->fpsControl;
+	// Quit SDL Image
+	IMG_Quit();
 }
 

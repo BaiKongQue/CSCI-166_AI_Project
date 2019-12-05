@@ -4,17 +4,20 @@
 
 #include "Person.h";
 
-class Player : Person {
+class Player : public Person {
 private:
 	int arrows;
-	bool isArrowNocked;
+	static float* vk;
 public:
-	Player();
-private:
-	void PickUpArrow();
+	Player(Window* window, std::vector<Entity*>* entities, std::vector<int>* walls, int spawnPos);
+protected:
+	std::vector<Entity::State*>* AddStates(int pos);
+	void OnCollision(Entity* arrow);
+	float* GetVk();
 public:
-	void NockArrow();
-	void FireArrow();
+	float GetReward(GRID_TYPE entityType);
+public:
+	~Player();
 };
 
 #endif /* PLAYER_H */

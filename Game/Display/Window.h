@@ -6,7 +6,6 @@
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 #include <string>
-#include "FPS.h"
 
 class Window {
 private:
@@ -14,7 +13,6 @@ private:
 	SDL_Renderer* renderer;
 public:
 	TTF_Font* font;
-	FPS* fpsControl;
 	int windowWidth;
 	int windowHeight;
 	int bitSize;
@@ -26,7 +24,8 @@ public:
 	SDL_Texture* LoadImageTexture(const char* path);
 	SDL_Texture* LoadTextTexture(const char* text, SDL_Color textColor);
 	void ClearScreen();
-	void Draw(SDL_Texture* src, SDL_Rect& srcRect, SDL_Rect& destRect);
+	void Draw(SDL_Texture* src, SDL_Rect* srcRect, SDL_Rect* destRect);
+	void UpdateScreen();
 public:
 	~Window();
 };

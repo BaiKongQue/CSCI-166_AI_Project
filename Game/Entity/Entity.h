@@ -3,32 +3,61 @@
 #define ENTITY_H
 
 #include <vector>
-
 #include "../Display/Window.h"
 #include "../Enum/GridType.enum.h"
+#include "../Enum/State.enum.h"
+#include <functional>
 
 class Entity {
 protected:
-	GRID_TYPE type;
-	int posX;
-	int posY;
+	Window* window;
+	std::vector<int>* walls;
+	std::vector<Entity*>* entities;
+	SDL_Texture* spriteTexture;
+	struct State {
+		STATE state;
+		int pos;
+		std::function<void()> action;
+		std::function<int()> reward;
+	};
+private:
 	int numFrames;
 	int currFrame;
-	SDL_Texture* spriteTexture;
+	int frameRate;
+	int oldTime;
+	SDL_Rect* srcRect;
+	SDL_Rect* destRect;
 public:
-	static std::vector<Entity*> entities;
+    bool dead;
+	GRID_TYPE type;
 public:
-	Entity();
+	static std::vector<SDL_Texture*> spriteCache;
+	int posX;
+	int posY;
 public:
-	void OnLoop();
-	void OnRender();
-	void OnCleanup();
-protected:
-	void OnMove(int newX, int newY);
+	Entity(Window* window,
+		std::vector<Entity*>* entities,
+		std::vector<int>* walls,
+		int spawnPos,
+		GRID_TYPE type,
+		int numberFrames,
+		const char* spritePath);
+private:
 	void OnAnimate();
-	void CanMove();
-	void LoadImage();
-	void OnCollision(Entity* entity);
+protected:
+	bool IsWall(int pos);
+	bool IsWall(int x, int y);
+	virtual void OnCollision(Entity* entity);
+public:
+	virtual float GetReward(GRID_TYPE entityType);
+	virtual void MakeMove();
+	virtual void OnLoop();
+	void OnRender();
+	int GetPos(int x, int y);
+	int GetX(int pos);
+	int GetY(int pos);
+public:
+	~Entity();
 };
 
 #endif /* ENTITY_H */
